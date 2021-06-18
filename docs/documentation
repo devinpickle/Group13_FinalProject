@@ -1,24 +1,59 @@
-THings to add:
-Player movement
-Collisions with platforms
-Enemies, movement, collisions
-Player attack
-Score/health display
-Sound
-Crouch
-Animations
+What program are we going to create?
+    Our plan is to make a platformer game with enemies and the ability to shoot projectiles (similar to MegaMan/Metroid).
+    A mockup drawing is included in docs folder.
 
-Alpha Priorities:
-Player movement
-Collisions with platforms
-*Possibly-Enemies, movement, collisions
+What technologies will we use?
+    Python, VS Code, and the arcade library
+
+What features will we include?
+    The game will surely have movement, jumping, platforms, and enemies.
+    See wishlist below for more of what is planned for our game.
+
+
+
+Things to add/Wishlist (organized by greatest priority to least):
+
+    Game Scene:
+        Player movement
+        Collisions with platforms
+        Enemies, movement, collisions
+        Player attack
+        Sound
+        Score/health display
+        Crouch
+        Animations
+        Large levels with scrolling
+
+    Title Scene:
+        Start Button
+        Controls Button
+
+    End Game Scene:
+        Winner display
+        Game over display
+
+    Alpha Priorities:
+    Player movement
+    Collisions with platforms
+    *Possibly-Enemies, movement, collisions
 
 If I shared this with a friend, which features must work?
+    The player movement, collisions, and enemies must
+    be present and working in some way.
 
 Which features am I the most excited about building?
+    Devin: I'm most excited about getting the movement to work and building the interactions with platforms and enemies.
+    I'm also excited to build a level as well.
 
 Which features are the most unique to my program?
+    A feature unique to our program will be combat and the shooting aspect. This feature with enemy
+    interaction will add another layer of gameplay depth to our program.
 
 Which features will I learn the most from implementing?
+    Devin: I'll likely learn the most from implementing the movement, and the logic that comes with that.
+    I feel like the enemies and shooting mechanic will also be very new, so I'll learn a lot from working with those parts too.
 
 Do some features seem too far beyond my skill level?
+    Devin: Some wishlist features definitely seem ambitious and possibly outside my skill level right now.
+    I've never programmed an attack mechanic, screen scrolling, or animations so there will be a big learning
+    curve for me.
