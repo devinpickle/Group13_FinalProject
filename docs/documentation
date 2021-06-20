@@ -48,6 +48,9 @@ Which features am I the most excited about building?
     Brayden: I agree with Devin that getting the player movement to work smoothly and being able to interact with platforms and enemies will be exciting to work on. 
     I also think giving the enemies unique abilities, or all variations from one another, will be especially fun to work on. I think enemies can really make a game exciting,
     as they add to what you may be able to expect with the rest of the game environment.
+    
+    Cameron: I don't think there is any specific thing that I am excited about, I think the whole project is going to be fun to build and super cool once
+    it is finished!
 
 Which features are the most unique to my program?
     A feature unique to our program will be combat and the shooting aspect. This feature with enemy
@@ -59,6 +62,10 @@ Which features will I learn the most from implementing?
 
     Brayden: Implementing the physics of movement, general movement and things like falling after jumping, will be good points of learning for me as well. 
     I also think I will learn a lot using classes for the enemies (i.e. defining a superclass, and having enemy classes inherit from that).
+    
+    Cameron: I can't think of anything specific that I would learn a lot from, I have coded in Python for over 5 years on my own already, so there aren't
+    any specific topics that I feel I don't know, but obviously, I don't know everything! I think it will be interesting to figure out a way to get each
+    enemy to move on its own, though. Might prove difficult!
 
 Do some features seem too far beyond my skill level?
     Devin: Some wishlist features definitely seem ambitious and possibly outside my skill level right now.
@@ -68,3 +75,6 @@ Do some features seem too far beyond my skill level?
     Brayden: Yeah, definitely. Lots of these principles I've never worked with before, same as Devin, but I think it will be a lot of fun. 
     Any part of it could become pretty complex it seems, pretty fast. Animations, decreasing health, and handling enemy attack mechanics 
     and player attack mechanics will all be new.
+    
+    Cameron: I think that one of the hardest things to code is going to be screen scrolling, and having large levels. I don't know how I would create a
+    procedurally generated level, if we ever get there. It will definitely be fun to try, though!
