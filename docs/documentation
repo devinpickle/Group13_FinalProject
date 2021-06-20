@@ -1,6 +1,6 @@
 What program are we going to create?
     Our plan is to make a platformer game with enemies and the ability to shoot projectiles (similar to MegaMan/Metroid).
-    A mockup drawing is included in docs folder.
+    A mockup drawing is included in docs folder, along with some game enemy ideas.
 
 What technologies will we use?
     Python, VS Code, and the arcade library
@@ -45,6 +45,10 @@ Which features am I the most excited about building?
     Devin: I'm most excited about getting the movement to work and building the interactions with platforms and enemies.
     I'm also excited to build a level as well.
 
+    Brayden: I agree with Devin that getting the player movement to work smoothly and being able to interact with platforms and enemies will be exciting to work on. 
+    I also think giving the enemies unique abilities, or all variations from one another, will be especially fun to work on. I think enemies can really make a game exciting,
+    as they add to what you may be able to expect with the rest of the game environment.
+
 Which features are the most unique to my program?
     A feature unique to our program will be combat and the shooting aspect. This feature with enemy
     interaction will add another layer of gameplay depth to our program.
@@ -53,7 +57,14 @@ Which features will I learn the most from implementing?
     Devin: I'll likely learn the most from implementing the movement, and the logic that comes with that.
     I feel like the enemies and shooting mechanic will also be very new, so I'll learn a lot from working with those parts too.
 
+    Brayden: Implementing the physics of movement, general movement and things like falling after jumping, will be good points of learning for me as well. 
+    I also think I will learn a lot using classes for the enemies (i.e. defining a superclass, and having enemy classes inherit from that).
+
 Do some features seem too far beyond my skill level?
     Devin: Some wishlist features definitely seem ambitious and possibly outside my skill level right now.
     I've never programmed an attack mechanic, screen scrolling, or animations so there will be a big learning
     curve for me.
+
+    Brayden: Yeah, definitely. Lots of these principles I've never worked with before, same as Devin, but I think it will be a lot of fun. 
+    Any part of it could become pretty complex it seems, pretty fast. Animations, decreasing health, and handling enemy attack mechanics 
+    and player attack mechanics will all be new.
