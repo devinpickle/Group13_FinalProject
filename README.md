@@ -26,4 +26,6 @@ root                    (project root folder)
 
 ## Authors
 ---
-[list author names and emails]
+Devin Picklesimer, pic18002@byui.edu 
+Cameron Roberts, rob20026@byui.edu 
+Brayden Jones, jon20015@byui.edu
