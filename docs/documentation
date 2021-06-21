@@ -33,9 +33,10 @@ Things to add/Wishlist (organized by greatest priority to least):
         Game over display
 
     Alpha Priorities:
+    Draw screen with player and platforms
     Player movement
-    Collisions with platforms
-    *Possibly-Enemies, movement, collisions
+    Above and Beyond* - Collisions with platforms
+    
 
 If I shared this with a friend, which features must work?
     The player movement, collisions, and enemies must
