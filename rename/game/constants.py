@@ -6,6 +6,11 @@ SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Rename"
 
+# Movement Speed
+PLAYER_MOVEMENT_SPEED = 5
+GRAVITY = 0.6
+PLAYER_JUMP_SPEED = 15
+
 # Constants used to scale our sprites from their original size
 CHARACTER_SCALING = 1
 TILE_SCALING = 0.5
