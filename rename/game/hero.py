@@ -9,3 +9,12 @@ class Player(arcade.Sprite):
         self.center_x = 50
         self.center_y = 200
         
+        
+
+    def look_left(self):
+        self.face_left = True
+        self.face_right = False
+
+    def look_right(self):
+        self.face_left = False
+        self.face_right = True
