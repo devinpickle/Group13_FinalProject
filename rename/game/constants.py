@@ -4,7 +4,7 @@ import arcade
 # Constants
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
-SCREEN_TITLE = "Rename"
+SCREEN_TITLE = "Jumping Bullets"
 
 # Movement Speed
 PLAYER_MOVEMENT_SPEED = 5
