@@ -7,9 +7,19 @@ from game.bullet import Bullet
 #from game.move_actors import MoveActors
 print
 class Director(arcade.Window):
+    """The responsibilty of Director is to create the window, set up the game, and direct the flow of the game. 
 
+    Stereotype:
+        Controller, Interfacer
+
+    Attributes:
+        output_service: instance of ArcadeOutputService
+        player_list (list): Begins with an empty list for player sprites
+        wall_list (list): Begins with an empty list for wall sprites 
+    """
 
     def __init__(self):
+        """The Class Contructor."""
 
         super().__init__(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE)
 
@@ -30,11 +40,16 @@ class Director(arcade.Window):
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
     def setup(self):
-        
+        """Sets up the game.
+
+        Args:
+            self (Director): an instance of Director
+        """
+
         # Used to keep track of our scrolling
         self.view_bottom = 0
         self.view_left = 0
-        
+      
         # Create the Sprite lists
         self.player_list = arcade.SpriteList()
         #self.wall_list = arcade.SpriteList(use_spatial_hash=True)
@@ -66,7 +81,12 @@ class Director(arcade.Window):
 
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed. Controls player sprite.
+        
+        Args:
+            self (Director): an instance of Director
+            key: a key that is pressed
+        """
         
         if key == arcade.key.UP or key == arcade.key.W or key == arcade.key.SPACE:
             if self.physics_engine.can_jump():
@@ -82,7 +102,12 @@ class Director(arcade.Window):
             self.bullet_list.append(bullet)
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+        """Called when the user releases a key. 
+        
+        Args:
+            self (Director): an instance of Director
+            key: a key that is released
+        """
 
         if key == arcade.key.LEFT or key == arcade.key.A:
             self.player_sprite.change_x = 0
@@ -90,6 +115,11 @@ class Director(arcade.Window):
             self.player_sprite.change_x = 0
 
     def on_draw(self):
+        """Handles drawing of actors in game.
+
+        Args:
+            self (Director): an instance of Director
+        """
         
         self.output_service.clear_screen()
         self.output_service.draw_actors(self.wall_list)
@@ -98,7 +128,11 @@ class Director(arcade.Window):
 
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """ Movement and game logic. Updates the screen.
+        
+        Args:
+            self (Director): an instance of Director
+        """
 
         # Move the player with the physics engine
         self.physics_engine.update()
