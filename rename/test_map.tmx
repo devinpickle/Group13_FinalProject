@@ -1,14 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.0" orientation="orthogonal" renderorder="right-down" width="100" height="50" tilewidth="128" tileheight="128" infinite="0" nextlayerid="2" nextobjectid="1">
- <tileset firstgid="1" name="Platforms" tilewidth="128" tileheight="128" tilecount="1" columns="0">
+<map version="1.5" tiledversion="1.7.0" orientation="orthogonal" renderorder="right-down" width="100" height="50" tilewidth="128" tileheight="128" infinite="0" nextlayerid="5" nextobjectid="1">
+ <tileset firstgid="1" name="Platforms" tilewidth="128" tileheight="128" tilecount="4" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
    <image width="128" height="128" source="../../platform_tutorial/images/tiles/stoneMid.png"/>
   </tile>
+  <tile id="1">
+   <image width="128" height="128" source="../../platform_tutorial/images/tiles/stoneHalf_mid.png"/>
+  </tile>
+  <tile id="2">
+   <image width="128" height="128" source="../../platform_tutorial/images/tiles/stoneHill_right.png"/>
+  </tile>
+  <tile id="3">
+   <image width="128" height="128" source="../../platform_tutorial/images/tiles/stoneHill_left.png"/>
+  </tile>
+ </tileset>
+ <tileset firstgid="5" name="Dynamic Items" tilewidth="128" tileheight="128" tilecount="2" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+   <image width="128" height="128" source="../../platform_tutorial/images/tiles/mushroomRed.png"/>
+  </tile>
+  <tile id="1">
+   <image width="128" height="128" source="../../platform_tutorial/images/items/coinGold.png"/>
+  </tile>
  </tileset>
  <layer id="1" name="Platforms" width="100" height="50">
   <data encoding="base64" compression="zlib">
-   eJzt1UsOgCAMBUC4/6XdE9EY0RaYSbpj0fL4lAIAAAAAAAAAAAAAAAAAABCjRjewkBF7KY8xapFHJvKI1e7binnUk8qq7W+XPHoVbac8ZrBCHnfnPGseV73WizWzyzpT7y58cT/eGvmmZ5mp9WceT/7QGWu2eQ/rLgCy
+   eJzt1eEKgyAUBlCde/9nHhuNRWRU0zQ5B8R+BN17P8wQAAAAAAAAAAAAAAAAAAAA2oitCxhIiVnKo4wY5NGDx7TLo63l3EbLI4VfT/PVq2V9I+WRpn0tj9x6Xl/mR+7/NEoeafZ8tKdWmbzdPY89/6MzPV2RyVatceOdXu29G872VDuT3FmocT7+sZzz2lxyWZTMI2S+XcK8/q+aeRy5Q++47tbvCzkcAPE=
+  </data>
+ </layer>
+ <layer id="2" name="Dynamic Items" width="100" height="50">
+  <data encoding="base64" compression="zlib">
+   eJzt1TEKwDAIQFEXvf+Ru3SS0lUT3gOJo/CHRAAAAAAAAAAAAAAAAAAAAH/qHXaoNsyqtmsyqzfQZN5XD03m9D/k9B6n335jj5Pvv0mGFptkaLJJthfY6QGsZgDs
   </data>
  </layer>
 </map>
