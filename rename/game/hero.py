@@ -19,6 +19,9 @@ class Player(arcade.Sprite):
 
         self.center_x = 50
         self.center_y = 200
+
+        self.face_left = False
+        self.face_right = True
         
         
 

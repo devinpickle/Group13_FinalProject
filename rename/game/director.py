@@ -1,11 +1,13 @@
 import arcade
+import math
+from typing import Optional
 from game import constants
 from game.hero import Player
-from game.ground import Ground
+#from game.ground import Ground
 from game.arcade_output_service import ArcadeOutputService
 from game.bullet import Bullet
 #from game.move_actors import MoveActors
-print
+
 class Director(arcade.Window):
     """The responsibilty of Director is to create the window, set up the game, and direct the flow of the game. 
 
@@ -29,8 +31,14 @@ class Director(arcade.Window):
         self.player_list = None
         self.wall_list = None
         self.bullet_list = None
+        self.item_list = None
         
-        self.physics_engine = None
+        # Track the current state of what key is pressed
+        self.left_pressed = False
+        self.right_pressed = False
+
+        # Set the physics engine
+        self.physics_engine = Optional[arcade.PymunkPhysicsEngine]
 
         # Used to keep track of our scrolling
         self.view_bottom = 0
@@ -62,23 +70,61 @@ class Director(arcade.Window):
 
         # Read map layers
         self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', constants.TILE_SCALING)
-
+        self.item_list = arcade.tilemap.process_layer(my_map, 'Dynamic Items', constants.TILE_SCALING)
 
         # Set up the player
         self.player_sprite = Player()
+        #self.player_sprite.look_right()
         self.player_list.append(self.player_sprite)
 
         
-        # Create the ground
-        #for x in range(0, 1250, 64):
-        #    wall = Ground(x, 32)
-        #    self.wall_list.append(wall)
+        #----Setting up the Physics Engine------
+        
+        # Set the damping, the amount of velocity the object
+        # keeps each second.
+        damping = constants.DEFAULT_DAMPING
 
+        # Set the gravity
+        gravity = (0, -constants.GRAVITY)
         
         # Create the physics engine
-        self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite, self.wall_list, constants.GRAVITY)
+        self.physics_engine = arcade.PymunkPhysicsEngine(damping = damping, gravity = gravity)
 
+        # Add Collision Handlers
+        def wall_hit_handler(bullet_sprite, _wall_sprite, _arbiter, _space, _data):
+            """Bullet wall collision"""
+            bullet_sprite.remove_from_sprite_lists()
 
+        self.physics_engine.add_collision_handler("bullet", "wall", post_handler = wall_hit_handler)
+
+        def item_hit_handler(bullet_sprite, item_sprite, _arbiter, _space, _data):
+            """Bullet Item collision"""
+            bullet_sprite.remove_from_sprite_lists()
+            item_sprite.remove_from_sprite_lists()
+        
+        self.physics_engine.add_collision_handler("bullet", "item", post_handler = item_hit_handler)
+
+        # Add the player
+        self.physics_engine.add_sprite(self.player_sprite, friction = constants.PLAYER_FRICTION,
+                                        mass = constants.PLAYER_MASS,
+                                        moment = arcade.PymunkPhysicsEngine.MOMENT_INF,
+                                        collision_type = "player",
+                                        max_horizontal_velocity = constants.PLAYER_MAX_HORIZONTAL_SPEED,
+                                        max_vertical_velocity = constants.PLAYER_MAX_VERTICAL_SPEED)
+        
+        # Add the walls
+        self.physics_engine.add_sprite_list(self.wall_list,
+                                            friction = constants.WALL_FRICTION,
+                                            collision_type = "wall",
+                                            body_type = arcade.PymunkPhysicsEngine.STATIC)
+        
+        # Add the items
+        self.physics_engine.add_sprite_list(self.item_list,
+                                            friction = constants.DYNAMIC_ITEM_FRICTION,
+                                            collision_type = "item")
+        
+
+        
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. Controls player sprite.
@@ -88,18 +134,67 @@ class Director(arcade.Window):
             key: a key that is pressed
         """
         
-        if key == arcade.key.UP or key == arcade.key.W or key == arcade.key.SPACE:
-            if self.physics_engine.can_jump():
-                self.player_sprite.change_y = constants.PLAYER_JUMP_SPEED
+        #if key == arcade.key.UP or key == arcade.key.W or key == arcade.key.SPACE:
+        #    if self.physics_engine.can_jump():
+        #        self.player_sprite.change_y = constants.PLAYER_JUMP_SPEED
         #elif key == arcade.key.DOWN or key == arcade.key.S:
             #self.player_sprite.change_y = -constants.PLAYER_MOVEMENT_SPEED
-        elif key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x = -constants.PLAYER_MOVEMENT_SPEED
+        if key == arcade.key.LEFT or key == arcade.key.A:
+            self.left_pressed = True
+            self.player_sprite.face_left = True
+            self.player_sprite.face_right = False
         elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.player_sprite.change_x = constants.PLAYER_MOVEMENT_SPEED
+            self.right_pressed = True
+            self.player_sprite.face_left = False
+            self.player_sprite.face_right = True
+        elif key == arcade.key.UP or key == arcade.key.W:
+            # Check if player is on the ground then jump
+            if self.physics_engine.is_on_ground(self.player_sprite):
+                impulse = (0, constants.PLAYER_JUMP_IMPULSE)
+                self.physics_engine.apply_impulse(self.player_sprite, impulse)
         elif key == arcade.key.J:
-            bullet = Bullet(self.player_sprite.right + 20, self.player_sprite.center_y)
+            bullet = Bullet(20, 5, arcade.color.BLACK)
             self.bullet_list.append(bullet)
+
+
+            # Set bullet position based on which way the player is facing
+            # Away from the player
+            start_y = self.player_sprite.center_y
+            if self.player_sprite.face_left:
+                start_x = self.player_sprite.left - 20
+                dest_x = self.player_sprite.center_x - 400
+                angle = 180
+            else:
+                start_x = self.player_sprite.right + 20
+                dest_x = self.player_sprite.center_x + 400
+                angle = 0
+
+
+            #size = max(self.player_sprite.width, self.player_sprite.height) / 2
+
+            bullet.center_x = start_x
+            bullet.center_y = start_y
+
+            bullet.angle = angle
+
+            # Set bullet gravity
+            bullet_gravity = (0, -constants.BULLET_GRAVITY)
+
+            # Add bullet sprite
+            self.physics_engine.add_sprite(bullet, mass = constants.BULLET_MASS,
+                                            damping = 1.0, friction = 0.6,
+                                            collision_type = "bullet",
+                                            gravity = bullet_gravity,
+                                            elasticity = 0.9)
+            
+            # Add force to bullet
+            force = (constants.BULLET_MOVE_FORCE, 0)
+            self.physics_engine.apply_force(bullet, force)
+
+            
+
+            
+        
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. 
@@ -110,9 +205,9 @@ class Director(arcade.Window):
         """
 
         if key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x = 0
+            self.left_pressed = False
         elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.player_sprite.change_x = 0
+            self.right_pressed = False
 
     def on_draw(self):
         """Handles drawing of actors in game.
@@ -125,7 +220,11 @@ class Director(arcade.Window):
         self.output_service.draw_actors(self.wall_list)
         self.output_service.draw_actors(self.player_list)
         self.output_service.draw_actors(self.bullet_list)
+        self.output_service.draw_actors(self.item_list)
 
+    
+
+        
 
     def on_update(self, delta_time):
         """ Movement and game logic. Updates the screen.
@@ -134,13 +233,33 @@ class Director(arcade.Window):
             self (Director): an instance of Director
         """
 
-        # Move the player with the physics engine
-        self.physics_engine.update()
-
-        # Move the bullets
-        self.bullet_list.update()
-
-        # --- Manage Scrolling ---
+        is_on_ground = self.physics_engine.is_on_ground(self.player_sprite)
+        
+        # Update player forces based on input
+        if self.left_pressed and not self.right_pressed:
+            # Create left force and apply to player
+            if is_on_ground:
+                force = (-constants.PLAYER_MOVE_FORCE_ON_GROUND, 0)
+            else:
+                force = (-constants.PLAYER_MOVE_FORCE_IN_AIR, 0)
+            self.physics_engine.apply_force(self.player_sprite, force)
+            # Set player friction to 0 while moving
+            self.physics_engine.set_friction(self.player_sprite, 0)
+        elif self.right_pressed and not self.left_pressed:
+            # Create right force and apply to player
+            if is_on_ground:
+                force = (constants.PLAYER_MOVE_FORCE_ON_GROUND, 0)
+            else:
+                force = (constants.PLAYER_MOVE_FORCE_IN_AIR, 0)
+            self.physics_engine.apply_force(self.player_sprite, force)
+            # Set player friction to 0 while moving
+            self.physics_engine.set_friction(self.player_sprite, 0)
+        else:
+            # Increase player friction to stop moving
+            self.physics_engine.set_friction(self.player_sprite, 1.0)
+        
+        
+        # ------ Manage Scrolling ------
 
         # Track if we need to change the viewport
 
@@ -182,7 +301,8 @@ class Director(arcade.Window):
                                 self.view_bottom,
                                 constants.SCREEN_HEIGHT + self.view_bottom)
 
+        # Move the player with the physics engine
+        self.physics_engine.step()
 
-        # Get rid of bullets
         
 
