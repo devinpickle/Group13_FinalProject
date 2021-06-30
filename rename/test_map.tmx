@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.0" orientation="orthogonal" renderorder="right-down" width="100" height="50" tilewidth="128" tileheight="128" infinite="0" nextlayerid="5" nextobjectid="1">
- <tileset firstgid="1" name="Platforms" tilewidth="128" tileheight="128" tilecount="4" columns="0">
+<map version="1.5" tiledversion="1.7.0" orientation="orthogonal" renderorder="right-down" width="100" height="50" tilewidth="128" tileheight="128" infinite="0" nextlayerid="9" nextobjectid="13">
+ <tileset firstgid="1" name="Platforms" tilewidth="128" tileheight="128" tilecount="9" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
    <image width="128" height="128" source="../../platform_tutorial/images/tiles/stoneMid.png"/>
@@ -14,8 +14,23 @@
   <tile id="3">
    <image width="128" height="128" source="../../platform_tutorial/images/tiles/stoneHill_left.png"/>
   </tile>
+  <tile id="4">
+   <image width="128" height="128" source="../../platform_tutorial/images/tiles/stoneCenter.png"/>
+  </tile>
+  <tile id="5">
+   <image width="128" height="128" source="../../platform_tutorial/images/tiles/stoneHalf_left.png"/>
+  </tile>
+  <tile id="6">
+   <image width="128" height="128" source="../../platform_tutorial/images/tiles/stoneHalf_mid.png"/>
+  </tile>
+  <tile id="7">
+   <image width="128" height="128" source="../../platform_tutorial/images/tiles/stoneHalf_right.png"/>
+  </tile>
+  <tile id="8">
+   <image width="128" height="128" source="../../platform_tutorial/images/tiles/stoneHalf.png"/>
+  </tile>
  </tileset>
- <tileset firstgid="5" name="Dynamic Items" tilewidth="128" tileheight="128" tilecount="2" columns="0">
+ <tileset firstgid="10" name="Dynamic Items" tilewidth="128" tileheight="128" tilecount="3" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
    <image width="128" height="128" source="../../platform_tutorial/images/tiles/mushroomRed.png"/>
@@ -23,15 +38,58 @@
   <tile id="1">
    <image width="128" height="128" source="../../platform_tutorial/images/items/coinGold.png"/>
   </tile>
+  <tile id="2">
+   <image width="128" height="128" source="../../platform_tutorial/images/tiles/boxCrate.png"/>
+  </tile>
+ </tileset>
+ <tileset firstgid="13" name="Breakable Walls" tilewidth="128" tileheight="128" tilecount="1" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+   <image width="128" height="128" source="../../platform_tutorial/images/tiles/stoneCenter_rounded.png"/>
+  </tile>
+ </tileset>
+ <tileset firstgid="14" name="Moving Sprites" tilewidth="128" tileheight="128" tilecount="1" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+   <image width="128" height="128" source="../../platform_tutorial/images/tiles/planetHalf.png"/>
+  </tile>
  </tileset>
  <layer id="1" name="Platforms" width="100" height="50">
   <data encoding="base64" compression="zlib">
-   eJzt1eEKgyAUBlCde/9nHhuNRWRU0zQ5B8R+BN17P8wQAAAAAAAAAAAAAAAAAAAA2oitCxhIiVnKo4wY5NGDx7TLo63l3EbLI4VfT/PVq2V9I+WRpn0tj9x6Xl/mR+7/NEoeafZ8tKdWmbzdPY89/6MzPV2RyVatceOdXu29G872VDuT3FmocT7+sZzz2lxyWZTMI2S+XcK8/q+aeRy5Q++47tbvCzkcAPE=
+   eJzt2IEKgjAUBdBJWPn/P5xBQoxpzumadQ6MmJhs77qhhgAAAAAAAAAAAAAAAABQR5fRaItM2iKP9tjHYDvrZT+farnmGaw/coB/ZK9aymMffZDHN8V7UyqP69huY7tnXLeVPM72TvusWxf1f319THNuKafh9RvX/70/hO1azqNlS3mUXreWlu7zHKmxTvXvov6kZI3U0ifaGcRj7RLHluZTM5uce/2MeVzCfO2P2K9yvt/PvU++r9215679T2krnW9qrEvHSsf7ABE8AhQ=
   </data>
  </layer>
  <layer id="2" name="Dynamic Items" width="100" height="50">
   <data encoding="base64" compression="zlib">
-   eJzt1TEKwDAIQFEXvf+Ru3SS0lUT3gOJo/CHRAAAAAAAAAAAAAAAAAAAAH/qHXaoNsyqtmsyqzfQZN5XD03m9D/k9B6n335jj5Pvv0mGFptkaLJJthfY6QGsZgDs
+   eJzt0kEKgCAQQNFZ29z/vG2TEoyEtN4DGZfinwgAAAAAAAAAAAAAAAAAAAB65dsPoKLHWE//U4+zrXHvocd428XpNWOPuzv1JTPu992dWllG3WC2HiX+12K2Bkcl/tEkY50ex/lF2Ziwkh2TXgG/
   </data>
  </layer>
+ <layer id="6" name="Breakable Walls" width="100" height="50">
+  <data encoding="base64" compression="zlib">
+   eJzt0TENAAAIBDEM4N8uBlgJP7TJKbgqAAAAAAAAAAAAAAAAAAAAAAC41Uv88SOLH1n84NsANbsBBQ==
+  </data>
+ </layer>
+ <objectgroup id="8" name="Moving Sprites" offsetx="-4" offsety="-20">
+  <object id="10" gid="14" x="644" y="5928" width="128" height="128">
+   <properties>
+    <property name="boundary_bottom" type="int" value="300"/>
+    <property name="boundary_top" type="int" value="500"/>
+    <property name="change_y" type="int" value="3"/>
+   </properties>
+  </object>
+  <object id="11" gid="14" x="652" y="6212" width="128" height="128">
+   <properties>
+    <property name="boundary_left" type="int" value="300"/>
+    <property name="boundary_right" type="int" value="800"/>
+    <property name="change_x" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="12" gid="14" x="560" y="6072" width="300" height="128">
+   <properties>
+    <property name="boundary_left" type="int" value="300"/>
+    <property name="boundary_right" type="int" value="800"/>
+    <property name="change_x" type="int" value="4"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

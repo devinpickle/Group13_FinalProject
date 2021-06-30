@@ -32,6 +32,7 @@ class Director(arcade.Window):
         self.wall_list = None
         self.bullet_list = None
         self.item_list = None
+        self.moving_sprites_list = None
         
         # Track the current state of what key is pressed
         self.left_pressed = False
@@ -71,6 +72,8 @@ class Director(arcade.Window):
         # Read map layers
         self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', constants.TILE_SCALING)
         self.item_list = arcade.tilemap.process_layer(my_map, 'Dynamic Items', constants.TILE_SCALING)
+        self.breakable_wall_list = arcade.tilemap.process_layer(my_map, 'Breakable Walls', constants.TILE_SCALING)
+        self.moving_sprites_list = arcade.tilemap.process_layer(my_map, 'Moving Sprites', constants.TILE_SCALING)
 
         # Set up the player
         self.player_sprite = Player()
@@ -90,19 +93,30 @@ class Director(arcade.Window):
         # Create the physics engine
         self.physics_engine = arcade.PymunkPhysicsEngine(damping = damping, gravity = gravity)
 
-        # Add Collision Handlers
-        def wall_hit_handler(bullet_sprite, _wall_sprite, _arbiter, _space, _data):
+        # ---------- Add Collision Handlers --------
+        
+        # Bullet/wall collision
+        def wall_hit_handler(bullet_sprite, wall_sprite, _arbiter, _space, _data):
             """Bullet wall collision"""
             bullet_sprite.remove_from_sprite_lists()
 
         self.physics_engine.add_collision_handler("bullet", "wall", post_handler = wall_hit_handler)
 
+        # Bullet/item collision
         def item_hit_handler(bullet_sprite, item_sprite, _arbiter, _space, _data):
             """Bullet Item collision"""
             bullet_sprite.remove_from_sprite_lists()
             item_sprite.remove_from_sprite_lists()
         
         self.physics_engine.add_collision_handler("bullet", "item", post_handler = item_hit_handler)
+
+        # Bullet/breakable wall collision
+        def breakable_wall_hit_handler(bullet_sprite, wall_sprite, _arbiter, _space, _data):
+            """Bullet on breakable wall collision"""
+            bullet_sprite.remove_from_sprite_lists()
+            wall_sprite.remove_from_sprite_lists()
+
+        self.physics_engine.add_collision_handler("bullet", "breakable wall", post_handler = breakable_wall_hit_handler)
 
         # Add the player
         self.physics_engine.add_sprite(self.player_sprite, friction = constants.PLAYER_FRICTION,
@@ -122,7 +136,16 @@ class Director(arcade.Window):
         self.physics_engine.add_sprite_list(self.item_list,
                                             friction = constants.DYNAMIC_ITEM_FRICTION,
                                             collision_type = "item")
+
+        # Add breakable walls
+        self.physics_engine.add_sprite_list(self.breakable_wall_list,
+                                            friction = constants.WALL_FRICTION,
+                                            collision_type = "breakable wall",
+                                            body_type = arcade.PymunkPhysicsEngine.STATIC)
         
+        # Add moving platforms
+        self.physics_engine.add_sprite_list(self.moving_sprites_list,
+                                            body_type = arcade.PymunkPhysicsEngine.KINEMATIC)
 
         
 
@@ -221,6 +244,8 @@ class Director(arcade.Window):
         self.output_service.draw_actors(self.player_list)
         self.output_service.draw_actors(self.bullet_list)
         self.output_service.draw_actors(self.item_list)
+        self.output_service.draw_actors(self.breakable_wall_list)
+        self.output_service.draw_actors(self.moving_sprites_list)
 
     
 
@@ -304,5 +329,30 @@ class Director(arcade.Window):
         # Move the player with the physics engine
         self.physics_engine.step()
 
-        
 
+        # For each moving sprite, see if we've reached a boundary and need to
+        # reverse course.
+        for moving_sprite in self.moving_sprites_list:
+            if moving_sprite.boundary_right and \
+                    moving_sprite.change_x > 0 and \
+                    moving_sprite.right > moving_sprite.boundary_right:
+                moving_sprite.change_x *= -1
+            elif moving_sprite.boundary_left and \
+                    moving_sprite.change_x < 0 and \
+                    moving_sprite.left < moving_sprite.boundary_left:
+                moving_sprite.change_x *= -1
+            if moving_sprite.boundary_top and \
+                    moving_sprite.change_y > 0 and \
+                    moving_sprite.top > moving_sprite.boundary_top:
+                moving_sprite.change_y *= -1
+            elif moving_sprite.boundary_bottom and \
+                    moving_sprite.change_y < 0 and \
+                    moving_sprite.bottom < moving_sprite.boundary_bottom:
+                moving_sprite.change_y *= -1
+
+            # Figure out and set our moving platform velocity.
+            # Pymunk uses velocity is in pixels per second. If we instead have
+            # pixels per frame, we need to convert.
+            velocity = (moving_sprite.change_x * 1 / delta_time, moving_sprite.change_y * 1 / delta_time)
+            self.physics_engine.set_velocity(moving_sprite, velocity)
+        
