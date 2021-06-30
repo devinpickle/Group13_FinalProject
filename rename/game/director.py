@@ -72,11 +72,13 @@ class Director(arcade.Window):
         # Read map layers
         self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', constants.TILE_SCALING)
         self.item_list = arcade.tilemap.process_layer(my_map, 'Dynamic Items', constants.TILE_SCALING)
+        self.ammo_list = arcade.tilemap.process_layer(my_map, 'Ammo', constants.TILE_SCALING)
         self.breakable_wall_list = arcade.tilemap.process_layer(my_map, 'Breakable Walls', constants.TILE_SCALING)
         self.moving_sprites_list = arcade.tilemap.process_layer(my_map, 'Moving Sprites', constants.TILE_SCALING)
+        self.spawn_point_list = arcade.tilemap.process_layer(my_map, 'Begin', constants.TILE_SCALING)
 
         # Set up the player
-        self.player_sprite = Player()
+        self.player_sprite = Player(self.spawn_point_list[0].center_x, self.spawn_point_list[0].center_y)
         #self.player_sprite.look_right()
         self.player_list.append(self.player_sprite)
 
@@ -118,6 +120,15 @@ class Director(arcade.Window):
 
         self.physics_engine.add_collision_handler("bullet", "breakable wall", post_handler = breakable_wall_hit_handler)
 
+        # Add ammo pickup collisions
+        def player_item_ammo_handler(player_sprite, item_sprite, _arbiter, _space, _data):
+            player_sprite.ammo += 5
+            item_sprite.remove_from_sprite_lists()
+
+        self.physics_engine.add_collision_handler("player", "ammo", post_handler = player_item_ammo_handler)
+
+
+
         # Add the player
         self.physics_engine.add_sprite(self.player_sprite, friction = constants.PLAYER_FRICTION,
                                         mass = constants.PLAYER_MASS,
@@ -146,6 +157,9 @@ class Director(arcade.Window):
         # Add moving platforms
         self.physics_engine.add_sprite_list(self.moving_sprites_list,
                                             body_type = arcade.PymunkPhysicsEngine.KINEMATIC)
+
+        # Add the ammunition items
+        self.physics_engine.add_sprite_list(self.ammo_list, friction = constants.WALL_FRICTION, collision_type = "ammo", body_type = arcade.PymunkPhysicsEngine.STATIC)
 
         
 
@@ -176,43 +190,47 @@ class Director(arcade.Window):
                 impulse = (0, constants.PLAYER_JUMP_IMPULSE)
                 self.physics_engine.apply_impulse(self.player_sprite, impulse)
         elif key == arcade.key.J:
-            bullet = Bullet(20, 5, arcade.color.BLACK)
-            self.bullet_list.append(bullet)
+            if self.player_sprite.ammo > 0:
+                bullet = Bullet(20, 5, arcade.color.BLACK)
+                self.bullet_list.append(bullet)
 
 
-            # Set bullet position based on which way the player is facing
-            # Away from the player
-            start_y = self.player_sprite.center_y
-            if self.player_sprite.face_left:
-                start_x = self.player_sprite.left - 20
-                dest_x = self.player_sprite.center_x - 400
-                angle = 180
-            else:
-                start_x = self.player_sprite.right + 20
-                dest_x = self.player_sprite.center_x + 400
-                angle = 0
+                # Set bullet position based on which way the player is facing
+                # Away from the player
+                start_y = self.player_sprite.center_y
+                if self.player_sprite.face_left:
+                    start_x = self.player_sprite.left - 20
+                    dest_x = self.player_sprite.center_x - 400
+                    angle = 180
+                else:
+                    start_x = self.player_sprite.right + 20
+                    dest_x = self.player_sprite.center_x + 400
+                    angle = 0
 
 
-            #size = max(self.player_sprite.width, self.player_sprite.height) / 2
+                #size = max(self.player_sprite.width, self.player_sprite.height) / 2
 
-            bullet.center_x = start_x
-            bullet.center_y = start_y
+                bullet.center_x = start_x
+                bullet.center_y = start_y
 
-            bullet.angle = angle
+                bullet.angle = angle
 
-            # Set bullet gravity
-            bullet_gravity = (0, -constants.BULLET_GRAVITY)
+                # Set bullet gravity
+                bullet_gravity = (0, -constants.BULLET_GRAVITY)
 
-            # Add bullet sprite
-            self.physics_engine.add_sprite(bullet, mass = constants.BULLET_MASS,
-                                            damping = 1.0, friction = 0.6,
-                                            collision_type = "bullet",
-                                            gravity = bullet_gravity,
-                                            elasticity = 0.9)
-            
-            # Add force to bullet
-            force = (constants.BULLET_MOVE_FORCE, 0)
-            self.physics_engine.apply_force(bullet, force)
+                # Add bullet sprite
+                self.physics_engine.add_sprite(bullet, mass = constants.BULLET_MASS,
+                                                damping = 1.0, friction = 0.6,
+                                                collision_type = "bullet",
+                                                gravity = bullet_gravity,
+                                                elasticity = 0.9)
+                
+                # Add force to bullet
+                force = (constants.BULLET_MOVE_FORCE, 0)
+                self.physics_engine.apply_force(bullet, force)
+
+                # Subtract a ammo from the player
+                self.player_sprite.ammo -= 1
 
             
 
@@ -246,8 +264,14 @@ class Director(arcade.Window):
         self.output_service.draw_actors(self.item_list)
         self.output_service.draw_actors(self.breakable_wall_list)
         self.output_service.draw_actors(self.moving_sprites_list)
+        self.output_service.draw_actors(self.ammo_list)
+        health_position = self.player_sprite.get_health_coordinates()
+        health_display = f"Health: {self.player_sprite.health}"
+        arcade.draw_text(health_display, health_position[0], health_position[1], arcade.color.BLACK, 10)
+        ammo_position = self.player_sprite.get_ammo_display_coordinates()
+        ammo_display = f"Ammo: {self.player_sprite.ammo}"
+        arcade.draw_text(ammo_display, ammo_position[0], ammo_position[1], arcade.color.BLACK, 10)
 
-    
 
         
 
@@ -356,3 +380,6 @@ class Director(arcade.Window):
             velocity = (moving_sprite.change_x * 1 / delta_time, moving_sprite.change_y * 1 / delta_time)
             self.physics_engine.set_velocity(moving_sprite, velocity)
         
+        # Reset the game if the player health reaches 0
+        if self.player_sprite.health <= 0:
+            self.setup()

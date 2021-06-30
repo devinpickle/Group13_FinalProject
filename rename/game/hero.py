@@ -13,15 +13,20 @@ class Player(arcade.Sprite):
         center_y (integer): the y-coordinate of the center of the sprite
     """
 
-    def __init__(self):
+    def __init__(self, startx, starty):
         """Class Constructor."""
         super().__init__(constants.PLAYER_IMAGE, constants.CHARACTER_SCALING)
 
-        self.center_x = 50
-        self.center_y = 200
+        self.center_x = startx
+        self.center_y = starty
 
         self.face_left = False
         self.face_right = True
+
+        self.setup()
+        
+
+        
         
         
 
@@ -32,3 +37,20 @@ class Player(arcade.Sprite):
     def look_right(self):
         self.face_left = False
         self.face_right = True
+
+    def get_health_coordinates(self):
+        """Get the coordinates of the health to keep it following the player on screen."""
+        self.health_x = self.center_x - 30
+        self.health_y = self.center_y + 50
+        return (self.health_x, self.health_y)
+
+    def get_ammo_display_coordinates(self):
+        """Get the coordinates of the health to keep it following the player on screen."""
+        self.ammo_x = self.center_x - 30
+        self.ammo_y = self.center_y + 35
+        return (self.ammo_x, self.ammo_y)
+
+    def setup(self):
+        """Set player stats"""
+        self.health = 100
+        self.ammo = 50
