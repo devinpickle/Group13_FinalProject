@@ -1,3 +1,4 @@
+import os
 import arcade
 import math
 from typing import Optional
@@ -45,6 +46,11 @@ class Director(arcade.Window):
         self.view_bottom = 0
         self.view_left = 0
 
+        # Set the level
+        self.level = 1
+        
+        PATH = os.path.dirname(os.path.abspath(__file__))
+        self.map_name = os.path.join(PATH, '..', f'map{self.level}.tmx')
 
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
@@ -66,7 +72,7 @@ class Director(arcade.Window):
         self.bullet_list = arcade.SpriteList()
 
         # Read the map
-        map_name = constants.TEST_MAP
+        map_name = self.map_name
         my_map = arcade.tilemap.read_tmx(map_name)
 
         # Read map layers
@@ -76,6 +82,7 @@ class Director(arcade.Window):
         self.breakable_wall_list = arcade.tilemap.process_layer(my_map, 'Breakable Walls', constants.TILE_SCALING)
         self.moving_sprites_list = arcade.tilemap.process_layer(my_map, 'Moving Sprites', constants.TILE_SCALING)
         self.spawn_point_list = arcade.tilemap.process_layer(my_map, 'Begin', constants.TILE_SCALING)
+        self.exit_point_list = arcade.tilemap.process_layer(my_map, 'Exit', constants.TILE_SCALING)
 
         # Set up the player
         self.player_sprite = Player(self.spawn_point_list[0].center_x, self.spawn_point_list[0].center_y)
@@ -127,6 +134,11 @@ class Director(arcade.Window):
 
         self.physics_engine.add_collision_handler("player", "ammo", post_handler = player_item_ammo_handler)
 
+        # Add exit point collisions
+        def player_exit_handler(player_sprite, exit_sprite, _arbiter, _space, _data):
+            self.go_to_next_level()
+
+        self.physics_engine.add_collision_handler("player", "exit", post_handler = player_exit_handler)
 
 
         # Add the player
@@ -161,7 +173,16 @@ class Director(arcade.Window):
         # Add the ammunition items
         self.physics_engine.add_sprite_list(self.ammo_list, friction = constants.WALL_FRICTION, collision_type = "ammo", body_type = arcade.PymunkPhysicsEngine.STATIC)
 
-        
+        # Add the exit point
+        self.physics_engine.add_sprite_list(self.exit_point_list, friction = constants.WALL_FRICTION, collision_type = 'exit')
+
+
+    def go_to_next_level(self):
+        self.level += 1
+        PATH = os.path.dirname(os.path.abspath(__file__))
+        self.map_name = os.path.join(PATH, '..', f'map{self.level}.tmx')
+        self.setup()
+
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. Controls player sprite.
@@ -265,6 +286,7 @@ class Director(arcade.Window):
         self.output_service.draw_actors(self.breakable_wall_list)
         self.output_service.draw_actors(self.moving_sprites_list)
         self.output_service.draw_actors(self.ammo_list)
+        self.output_service.draw_actors(self.exit_point_list)
         health_position = self.player_sprite.get_health_coordinates()
         health_display = f"Health: {self.player_sprite.health}"
         arcade.draw_text(health_display, health_position[0], health_position[1], arcade.color.BLACK, 10)

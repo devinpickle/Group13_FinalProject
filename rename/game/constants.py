@@ -59,9 +59,11 @@ BULLET_MASS = 0.1
 BULLET_GRAVITY = 30
 
 #-----Maps, images, sounds--------------------
+# start at level 1
+level = 1
 PATH = os.path.dirname(os.path.abspath(__file__))
 PLAYER_IMAGE = os.path.join(PATH, '..', 'assets', 'images', 'player_stand.png')
 GROUND_IMAGE = os.path.join(PATH, '..', 'assets', 'images', 'stoneMid.png')
 
 # Maps
-TEST_MAP = os.path.join(PATH, '..', 'test_map.tmx')
+MAP_NAME = os.path.join(PATH, '..', f'map{level}.tmx')
