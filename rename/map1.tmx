@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.0" orientation="orthogonal" renderorder="right-down" width="100" height="50" tilewidth="128" tileheight="128" infinite="0" nextlayerid="11" nextobjectid="15">
+<map version="1.5" tiledversion="1.7.0" orientation="orthogonal" renderorder="right-down" width="100" height="50" tilewidth="128" tileheight="128" infinite="0" nextlayerid="13" nextobjectid="18">
  <tileset firstgid="1" name="Platforms" tilewidth="128" tileheight="128" tilecount="9" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
@@ -60,6 +60,18 @@
    <image width="128" height="128" source="../../platform_tutorial/images/items/gemYellow.png"/>
   </tile>
  </tileset>
+ <tileset firstgid="16" name="Spawn and exit" tilewidth="128" tileheight="128" tilecount="3" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+   <image width="128" height="128" source="../../platform_tutorial/images/items/flagGreen2.png"/>
+  </tile>
+  <tile id="1">
+   <image width="128" height="128" source="../../platform_tutorial/images/tiles/doorClosed_mid.png"/>
+  </tile>
+  <tile id="2">
+   <image width="128" height="128" source="../../platform_tutorial/images/tiles/doorClosed_top.png"/>
+  </tile>
+ </tileset>
  <layer id="1" name="Platforms" width="100" height="50">
   <data encoding="base64" compression="zlib">
    eJzt2IEKgjAUBdBJWPn/P5xBQoxpzumadQ6MmJhs77qhhgAAAAAAAAAAAAAAAABQR5fRaItM2iKP9tjHYDvrZT+farnmGaw/coB/ZK9aymMffZDHN8V7UyqP69huY7tnXLeVPM72TvusWxf1f319THNuKafh9RvX/70/hO1azqNlS3mUXreWlu7zHKmxTvXvov6kZI3U0ifaGcRj7RLHluZTM5uce/2MeVzCfO2P2K9yvt/PvU++r9215679T2krnW9qrEvHSsf7ABE8AhQ=
@@ -97,7 +109,15 @@
     <property name="change_x" type="int" value="4"/>
    </properties>
   </object>
+  <object id="15" gid="14" x="7268" y="7148" width="128" height="1264">
+   <properties>
+    <property name="boundary_bottom" type="int" value="-400"/>
+    <property name="boundary_top" type="int" value="300"/>
+    <property name="change_y" type="int" value="3"/>
+   </properties>
+  </object>
  </objectgroup>
+ <objectgroup id="11" name="Damaging Sprites"/>
  <layer id="9" name="Ammo" width="100" height="50">
   <data encoding="base64" compression="zlib">
    eJztwzENAAAIA7A5wL9briUo4GqTJgAAAAAAAAAAAAAAAAAAAAAAANScAN8WGK8ALg==
@@ -108,6 +128,12 @@
    <property name="begin_x" type="int" value="0"/>
    <property name="begin_y" type="int" value="0"/>
   </properties>
-  <object id="14" gid="15" x="388" y="5500" width="128" height="128"/>
+  <object id="16" gid="17" x="648" y="5352" width="128" height="128"/>
+  <object id="17" gid="18" x="648.121" y="5221.58" width="128" height="128"/>
  </objectgroup>
+ <layer id="12" name="Exit" width="100" height="50">
+  <data encoding="base64" compression="zlib">
+   eJzt10EJAAAMA7FKmH+1MzEYlETBfS8BAAAAAAAAAAAAAACAXvMdAAAAAMe8LgAAdFu7fgAh
+  </data>
+ </layer>
 </map>
