@@ -18,7 +18,7 @@ PLAYER_MAX_HORIZONTAL_SPEED = 450
 PLAYER_MAX_VERTICAL_SPEED = 1600
 
 # Force applied while on the ground
-PLAYER_MOVE_FORCE_ON_GROUND = 6000
+PLAYER_MOVE_FORCE_ON_GROUND = 5500
 
 # Force applied when moving left/right in the air
 PLAYER_MOVE_FORCE_IN_AIR = 900
@@ -28,7 +28,7 @@ PLAYER_JUMP_IMPULSE = 1800
 
 # Damping - Amount of speed lost per second
 DEFAULT_DAMPING = 1.0
-PLAYER_DAMPING = 0.4
+PLAYER_DAMPING = 0.9
 
 # Friction between objects
 PLAYER_FRICTION = 1.0
