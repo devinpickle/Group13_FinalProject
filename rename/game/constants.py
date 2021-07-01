@@ -18,7 +18,7 @@ PLAYER_MAX_HORIZONTAL_SPEED = 450
 PLAYER_MAX_VERTICAL_SPEED = 1600
 
 # Force applied while on the ground
-PLAYER_MOVE_FORCE_ON_GROUND = 5500
+PLAYER_MOVE_FORCE_ON_GROUND = 3000
 
 # Force applied when moving left/right in the air
 PLAYER_MOVE_FORCE_IN_AIR = 900
@@ -28,7 +28,7 @@ PLAYER_JUMP_IMPULSE = 1800
 
 # Damping - Amount of speed lost per second
 DEFAULT_DAMPING = 1.0
-PLAYER_DAMPING = 0.9
+PLAYER_DAMPING = 1.3
 
 # Friction between objects
 PLAYER_FRICTION = 1.0
@@ -59,11 +59,9 @@ BULLET_MASS = 0.1
 BULLET_GRAVITY = 30
 
 #-----Maps, images, sounds--------------------
-# start at level 1
-level = 1
 PATH = os.path.dirname(os.path.abspath(__file__))
 PLAYER_IMAGE = os.path.join(PATH, '..', 'assets', 'images', 'player_stand.png')
 GROUND_IMAGE = os.path.join(PATH, '..', 'assets', 'images', 'stoneMid.png')
 
 # Maps
-MAP_NAME = os.path.join(PATH, '..', f'map{level}.tmx')
+#MAP_NAME = os.path.join(PATH, '..', f'map{level}.tmx')

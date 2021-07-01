@@ -83,10 +83,11 @@ class Director(arcade.Window):
         self.moving_sprites_list = arcade.tilemap.process_layer(my_map, 'Moving Sprites', constants.TILE_SCALING)
         self.spawn_point_list = arcade.tilemap.process_layer(my_map, 'Begin', constants.TILE_SCALING)
         self.exit_point_list = arcade.tilemap.process_layer(my_map, 'Exit', constants.TILE_SCALING)
+        self.health_list = arcade.tilemap.process_layer(my_map, 'Health', constants.TILE_SCALING)
+        self.damaging_sprites_list = arcade.tilemap.process_layer(my_map, 'Damaging Sprites', constants.TILE_SCALING)
 
         # Set up the player
         self.player_sprite = Player(self.spawn_point_list[0].center_x, self.spawn_point_list[0].center_y)
-        #self.player_sprite.look_right()
         self.player_list.append(self.player_sprite)
 
         
@@ -140,6 +141,19 @@ class Director(arcade.Window):
 
         self.physics_engine.add_collision_handler("player", "exit", post_handler = player_exit_handler)
 
+        # Add health pickup collisions
+        def player_item_health_handler(player_sprite, item_sprite, _arbiter, _space, _data):
+            player_sprite.health += 5
+            item_sprite.remove_from_sprite_lists()
+
+        self.physics_engine.add_collision_handler("player", "health", post_handler = player_item_health_handler)
+
+        # Add damaging sprite collisions
+        def player_damage_sprite_collision(player_sprite, damage_sprite, _arbiter, _space, _data):
+            player_sprite.health -= 5
+            
+        self.physics_engine.add_collision_handler("player", "damage", post_handler = player_damage_sprite_collision)
+
 
         # Add the player
         self.physics_engine.add_sprite(self.player_sprite, friction = constants.PLAYER_FRICTION,
@@ -171,10 +185,16 @@ class Director(arcade.Window):
                                             body_type = arcade.PymunkPhysicsEngine.KINEMATIC)
 
         # Add the ammunition items
-        self.physics_engine.add_sprite_list(self.ammo_list, friction = constants.WALL_FRICTION, collision_type = "ammo", body_type = arcade.PymunkPhysicsEngine.STATIC)
+        self.physics_engine.add_sprite_list(self.ammo_list, collision_type = "ammo", body_type = arcade.PymunkPhysicsEngine.STATIC)
+
+        # Add health items
+        self.physics_engine.add_sprite_list(self.health_list, collision_type = "health", body_type = arcade.PymunkPhysicsEngine.STATIC)
 
         # Add the exit point
         self.physics_engine.add_sprite_list(self.exit_point_list, friction = constants.WALL_FRICTION, collision_type = 'exit')
+
+        # Add damage sprites
+        self.physics_engine.add_sprite_list(self.damaging_sprites_list, collision_type = "damage", body_type = arcade.PymunkPhysicsEngine.KINEMATIC)
 
 
     def go_to_next_level(self):
@@ -192,11 +212,7 @@ class Director(arcade.Window):
             key: a key that is pressed
         """
         
-        #if key == arcade.key.UP or key == arcade.key.W or key == arcade.key.SPACE:
-        #    if self.physics_engine.can_jump():
-        #        self.player_sprite.change_y = constants.PLAYER_JUMP_SPEED
-        #elif key == arcade.key.DOWN or key == arcade.key.S:
-            #self.player_sprite.change_y = -constants.PLAYER_MOVEMENT_SPEED
+       
         if key == arcade.key.LEFT or key == arcade.key.A:
             self.left_pressed = True
             self.player_sprite.face_left = True
@@ -287,6 +303,8 @@ class Director(arcade.Window):
         self.output_service.draw_actors(self.moving_sprites_list)
         self.output_service.draw_actors(self.ammo_list)
         self.output_service.draw_actors(self.exit_point_list)
+        self.output_service.draw_actors(self.health_list)
+        self.output_service.draw_actors(self.damaging_sprites_list)
         health_position = self.player_sprite.get_health_coordinates()
         health_display = f"Health: {self.player_sprite.health}"
         arcade.draw_text(health_display, health_position[0], health_position[1], arcade.color.BLACK, 10)
@@ -376,8 +394,7 @@ class Director(arcade.Window):
         self.physics_engine.step()
 
 
-        # For each moving sprite, see if we've reached a boundary and need to
-        # reverse course.
+        # Check boundaries for each moving sprite and reverse
         for moving_sprite in self.moving_sprites_list:
             if moving_sprite.boundary_right and \
                     moving_sprite.change_x > 0 and \
@@ -397,11 +414,34 @@ class Director(arcade.Window):
                 moving_sprite.change_y *= -1
 
             # Figure out and set our moving platform velocity.
-            # Pymunk uses velocity is in pixels per second. If we instead have
-            # pixels per frame, we need to convert.
             velocity = (moving_sprite.change_x * 1 / delta_time, moving_sprite.change_y * 1 / delta_time)
             self.physics_engine.set_velocity(moving_sprite, velocity)
         
+        # Check boundaries for each moving sprite and reverse
+        
+        for moving_damage_sprite in self.damaging_sprites_list:
+            if moving_damage_sprite.boundary_right and \
+                    moving_damage_sprite.change_x > 0 and \
+                    moving_damage_sprite.right > moving_damage_sprite.boundary_right:
+                moving_damage_sprite.change_x *= -1
+            elif moving_damage_sprite.boundary_left and \
+                    moving_damage_sprite.change_x < 0 and \
+                    moving_damage_sprite.left < moving_damage_sprite.boundary_left:
+                moving_damage_sprite.change_x *= -1
+            if moving_damage_sprite.boundary_top and \
+                    moving_damage_sprite.change_y > 0 and \
+                    moving_damage_sprite.top > moving_damage_sprite.boundary_top:
+                moving_damage_sprite.change_y *= -1
+            elif moving_damage_sprite.boundary_bottom and \
+                    moving_damage_sprite.change_y < 0 and \
+                    moving_damage_sprite.bottom < moving_damage_sprite.boundary_bottom:
+                moving_damage_sprite.change_y *= -1
+
+            # Figure out and set our moving platform velocity.
+            velocity = (moving_damage_sprite.change_x * 1 / delta_time, moving_damage_sprite.change_y * 1 / delta_time)
+            self.physics_engine.set_velocity(moving_damage_sprite, velocity)
+        
+
         # Reset the game if the player health reaches 0
         if self.player_sprite.health <= 0:
             self.setup()

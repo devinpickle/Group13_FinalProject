@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.0" orientation="orthogonal" renderorder="right-down" width="100" height="50" tilewidth="128" tileheight="128" infinite="0" nextlayerid="13" nextobjectid="18">
+<map version="1.5" tiledversion="1.7.0" orientation="orthogonal" renderorder="right-down" width="100" height="50" tilewidth="128" tileheight="128" infinite="0" nextlayerid="14" nextobjectid="21">
  <tileset firstgid="1" name="Platforms" tilewidth="128" tileheight="128" tilecount="9" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
@@ -48,19 +48,22 @@
    <image width="128" height="128" source="../../platform_tutorial/images/tiles/stoneCenter_rounded.png"/>
   </tile>
  </tileset>
- <tileset firstgid="14" name="Moving Sprites" tilewidth="128" tileheight="128" tilecount="1" columns="0">
+ <tileset firstgid="14" name="Moving Sprites" tilewidth="128" tileheight="128" tilecount="2" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
    <image width="128" height="128" source="../../platform_tutorial/images/tiles/planetHalf.png"/>
   </tile>
+  <tile id="1">
+   <image width="128" height="128" source="../../platform_tutorial/images/enemies/slimeBlock.png"/>
+  </tile>
  </tileset>
- <tileset firstgid="15" name="Ammo" tilewidth="128" tileheight="128" tilecount="1" columns="0">
+ <tileset firstgid="16" name="Ammo" tilewidth="128" tileheight="128" tilecount="1" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
    <image width="128" height="128" source="../../platform_tutorial/images/items/gemYellow.png"/>
   </tile>
  </tileset>
- <tileset firstgid="16" name="Spawn and exit" tilewidth="128" tileheight="128" tilecount="3" columns="0">
+ <tileset firstgid="17" name="Spawn and exit" tilewidth="128" tileheight="128" tilecount="3" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
    <image width="128" height="128" source="../../platform_tutorial/images/items/flagGreen2.png"/>
@@ -72,55 +75,57 @@
    <image width="128" height="128" source="../../platform_tutorial/images/tiles/doorClosed_top.png"/>
   </tile>
  </tileset>
+ <tileset firstgid="20" name="Health Items" tilewidth="128" tileheight="128" tilecount="1" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+   <image width="128" height="128" source="../../platform_tutorial/images/items/gemRed.png"/>
+  </tile>
+ </tileset>
  <layer id="1" name="Platforms" width="100" height="50">
   <data encoding="base64" compression="zlib">
-   eJzt18EOQDAQRVEW/v+XLcSuRGU6pHNOYo13JY1lAQAAAAAAAAAAAAAAAABgVmvjItfd9prkvv+Tvas32ZLu07Nz5Saje7w9G6o2GdUjYs+K53x0jxEbVmoS1WP0t1ylSUSPrK0qNOnp0doje6MKTZ5q/U9/sY0mh7/0OJ9lRlcb91zE2QGMhAB1
+   eJzt1TEKwCAMQFEdvP+VOxV0CNRaSCjvQVaJ/sHWAAAAAAAAAAAAAAAAAAAAcvTsBViM7AVY6FGLHrXoUctXPXow7Dntcb/7CEaTPW97RB3mc+cmugCnon/4L/PknpVcN1gAsg==
   </data>
  </layer>
  <layer id="2" name="Dynamic Items" width="100" height="50">
   <data encoding="base64" compression="zlib">
-   eJztwTEBAAAAwqD1T20ND6AAAAAAAAAAAAAAAAAAAAAAAAAAeDBOIAAB
+   eJzt0bENACAIRUEGYP95rU3UzvCLu4pQEV4VAAAAAAAAAAAAAAAAAACQoqcPYKNHFj2y6DHn9Hs95uiRRY8seszry/za8Y8eWfQg2QKY6AD9
   </data>
  </layer>
  <layer id="6" name="Breakable Walls" width="100" height="50">
   <data encoding="base64" compression="zlib">
-   eJztwTEBAAAAwqD1T20ND6AAAAAAAAAAAAAAAAAAAAAAAAAAeDBOIAAB
+   eJzt0aERAAAIAzEWYP918Yg6FMndu7pWAQAAAAAAAAAAAAAAAAAAAAAAsHUobbjhD74YstwBOQ==
   </data>
  </layer>
- <objectgroup id="8" name="Moving Sprites" offsetx="-4" offsety="-20">
-  <object id="10" gid="14" x="644" y="5928" width="128" height="128">
+ <objectgroup id="8" name="Moving Sprites" offsetx="-4" offsety="-20"/>
+ <objectgroup id="11" name="Damaging Sprites">
+  <properties>
+   <property name="boundary_bottom" type="int" value="-300"/>
+   <property name="boundary_top" type="int" value="600"/>
+   <property name="change_y" type="int" value="4"/>
+  </properties>
+  <object id="19" gid="1073741839" x="7234.86" y="7329.89" width="128" height="1458.06">
    <properties>
-    <property name="boundary_bottom" type="int" value="300"/>
+    <property name="boundary_bottom" type="int" value="-500"/>
     <property name="boundary_top" type="int" value="500"/>
-    <property name="change_y" type="int" value="3"/>
+    <property name="change_y" type="int" value="4"/>
    </properties>
   </object>
-  <object id="11" gid="14" x="652" y="6212" width="128" height="128">
+  <object id="20" gid="15" x="1145.15" y="5977.84" width="128" height="128">
    <properties>
-    <property name="boundary_left" type="int" value="300"/>
-    <property name="boundary_right" type="int" value="800"/>
+    <property name="boundary_left" type="int" value="-100"/>
+    <property name="boundary_right" type="int" value="500"/>
     <property name="change_x" type="int" value="2"/>
    </properties>
   </object>
-  <object id="12" gid="14" x="560" y="6072" width="300" height="128">
-   <properties>
-    <property name="boundary_left" type="int" value="300"/>
-    <property name="boundary_right" type="int" value="800"/>
-    <property name="change_x" type="int" value="4"/>
-   </properties>
-  </object>
-  <object id="15" gid="14" x="7268" y="7148" width="128" height="1264">
-   <properties>
-    <property name="boundary_bottom" type="int" value="-400"/>
-    <property name="boundary_top" type="int" value="300"/>
-    <property name="change_y" type="int" value="3"/>
-   </properties>
-  </object>
  </objectgroup>
- <objectgroup id="11" name="Damaging Sprites"/>
  <layer id="9" name="Ammo" width="100" height="50">
   <data encoding="base64" compression="zlib">
-   eJztwTEBAAAAwqD1T20ND6AAAAAAAAAAAAAAAAAAAAAAAAAAeDBOIAAB
+   eJzt0UENAAAIA7FJwL9aPohYSJucgksAAAAAAAAAAAAAAAAAAAAAAIB2c9HBjy5+8MkC8W8AYQ==
+  </data>
+ </layer>
+ <layer id="13" name="Health" width="100" height="50">
+  <data encoding="base64" compression="zlib">
+   eJztwzENAAAIA7CJwL9W3gUBXG3SBAAAAAAAAAAAAAAAAAAAAIAvUwEAAK4FKY0APQ==
   </data>
  </layer>
  <objectgroup id="10" name="Begin">
@@ -128,8 +133,8 @@
    <property name="begin_x" type="int" value="0"/>
    <property name="begin_y" type="int" value="0"/>
   </properties>
-  <object id="16" gid="17" x="648" y="5352" width="128" height="128"/>
-  <object id="17" gid="18" x="648.121" y="5221.58" width="128" height="128"/>
+  <object id="16" gid="18" x="648" y="6176.42" width="128" height="128"/>
+  <object id="17" gid="19" x="648.121" y="6100.96" width="128" height="128"/>
  </objectgroup>
  <layer id="12" name="Exit" width="100" height="50">
   <data encoding="base64" compression="zlib">
