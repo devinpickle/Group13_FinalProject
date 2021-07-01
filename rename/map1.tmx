@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.0" orientation="orthogonal" renderorder="right-down" width="100" height="50" tilewidth="128" tileheight="128" infinite="0" nextlayerid="13" nextobjectid="18">
+<map version="1.5" tiledversion="1.7.0" orientation="orthogonal" renderorder="right-down" width="100" height="50" tilewidth="128" tileheight="128" infinite="0" nextlayerid="15" nextobjectid="29">
  <tileset firstgid="1" name="Platforms" tilewidth="128" tileheight="128" tilecount="9" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
@@ -72,55 +72,78 @@
    <image width="128" height="128" source="../../platform_tutorial/images/tiles/doorClosed_top.png"/>
   </tile>
  </tileset>
+ <tileset firstgid="19" name="Health Items" tilewidth="128" tileheight="128" tilecount="1" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+   <image width="128" height="128" source="../../platform_tutorial/images/items/gemRed.png"/>
+  </tile>
+ </tileset>
+ <tileset firstgid="20" name="Damaging Sprites" tilewidth="128" tileheight="128" tilecount="1" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+   <image width="128" height="128" source="../../platform_tutorial/images/enemies/slimeBlock.png"/>
+  </tile>
+ </tileset>
  <layer id="1" name="Platforms" width="100" height="50">
   <data encoding="base64" compression="zlib">
-   eJzt2IEKgjAUBdBJWPn/P5xBQoxpzumadQ6MmJhs77qhhgAAAAAAAAAAAAAAAABQR5fRaItM2iKP9tjHYDvrZT+farnmGaw/coB/ZK9aymMffZDHN8V7UyqP69huY7tnXLeVPM72TvusWxf1f319THNuKafh9RvX/70/hO1azqNlS3mUXreWlu7zHKmxTvXvov6kZI3U0ifaGcRj7RLHluZTM5uce/2MeVzCfO2P2K9yvt/PvU++r9215679T2krnW9qrEvHSsf7ABE8AhQ=
+   eJztm8tuwyAQRd1FmuT/f7jNwmqEGMpjwHfCORIbW4mHOcbm5eMAAAAAANiTW2cBf2pzjpf5tOYTJ/MYyeVKH7s8RyPFv8P7LWLML6y840MPfGjxyT4i1yly7NbxiO9L9fhKePiYVeevzoKPeXGNlmjUxr2y3pHzOcpovXfN2yw88okPX8jnGN7Pb3z4MuLk/K3Vd4R2RtrJf/0mHLWzehyAnzKr++s5P/DHFeMnnNgojGctJ6V5ppRn5bGeOa0SvfNk1v+q+Nip31yqr4KP3cCHFvjQAh9a4EMLfGiBDy3wocWZ7/tveRjn8LEO2ocWVr6/D3xcAe1DC3xoEeV9vsu6YYT2ke6dXe3k/fq5c573ySofr/7BPSlpe8yR28e8ykluH3WKd0zK/aszFzne9z/MuG6pTVjxzL5PrvRRcnHiHVuPh1w8s5y0+BhZKy59a1ETX+t6dM33Hb20xNSbk5r4fgAV5whm
   </data>
  </layer>
  <layer id="2" name="Dynamic Items" width="100" height="50">
   <data encoding="base64" compression="zlib">
-   eJzt0kEKgCAQQNFZ29z/vG2TEoyEtN4DGZfinwgAAAAAAAAAAAAAAAAAAAB65dsPoKLHWE//U4+zrXHvocd428XpNWOPuzv1JTPu992dWllG3WC2HiX+12K2Bkcl/tEkY50ex/lF2Ziwkh2TXgG/
+   eJzt2CEOACAQA0EewP/fi0aQoGgTZtTJS9Z1DAAAAACAN2b6ATZ6dNEDAAAAuGVH6KJHFz266AEAAAAAAH3s9130yJuHmww98k4N9MjQ428LmZ8A5Q==
   </data>
  </layer>
  <layer id="6" name="Breakable Walls" width="100" height="50">
   <data encoding="base64" compression="zlib">
-   eJzt0TENAAAIBDEM4N8uBlgJP7TJKbgqAAAAAAAAAAAAAAAAAAAAAAC41Uv88SOLH1n84NsANbsBBQ==
+   eJzt0bEJADAMA0Ev4P3XTe2UIWAVd6Be8FUAAAAAAAAAwKvePsCgRxY9suiRJblHX2OXHln0yKJHFj0AAAAAAAAAAP45lxABRg==
   </data>
  </layer>
  <objectgroup id="8" name="Moving Sprites" offsetx="-4" offsety="-20">
-  <object id="10" gid="14" x="644" y="5928" width="128" height="128">
+  <object id="21" gid="14" x="892" y="2244" width="128" height="128">
    <properties>
-    <property name="boundary_bottom" type="int" value="300"/>
-    <property name="boundary_top" type="int" value="500"/>
-    <property name="change_y" type="int" value="3"/>
+    <property name="boundary_bottom" type="int" value="1700"/>
+    <property name="boundary_top" type="int" value="2400"/>
+    <property name="change_y" type="int" value="5"/>
    </properties>
   </object>
-  <object id="11" gid="14" x="652" y="6212" width="128" height="128">
+  <object id="23" gid="14" x="3216" y="2380" width="320" height="128">
    <properties>
-    <property name="boundary_left" type="int" value="300"/>
-    <property name="boundary_right" type="int" value="800"/>
+    <property name="boundary_left" type="int" value="1500"/>
+    <property name="boundary_right" type="int" value="2000"/>
     <property name="change_x" type="int" value="2"/>
    </properties>
   </object>
-  <object id="12" gid="14" x="560" y="6072" width="300" height="128">
+  <object id="24" gid="14" x="4288" y="2388" width="392" height="128">
    <properties>
-    <property name="boundary_left" type="int" value="300"/>
-    <property name="boundary_right" type="int" value="800"/>
-    <property name="change_x" type="int" value="4"/>
+    <property name="boundary_left" type="int" value="2200"/>
+    <property name="boundary_right" type="int" value="2650"/>
+    <property name="change_x" type="int" value="2"/>
    </properties>
   </object>
-  <object id="15" gid="14" x="7268" y="7148" width="128" height="1264">
+  <object id="26" gid="14" x="11092" y="4540" width="208" height="128">
    <properties>
-    <property name="boundary_bottom" type="int" value="-400"/>
-    <property name="boundary_top" type="int" value="300"/>
+    <property name="boundary_bottom" type="int" value="700"/>
+    <property name="boundary_top" type="int" value="1300"/>
     <property name="change_y" type="int" value="3"/>
    </properties>
   </object>
+  <object id="27" gid="14" x="8258.18" y="3856.73" width="191.636" height="128">
+   <properties>
+    <property name="boundary_left" type="int" value="4000"/>
+    <property name="boundary_right" type="int" value="4400"/>
+    <property name="change_x" type="int" value="2"/>
+   </properties>
+  </object>
  </objectgroup>
- <objectgroup id="11" name="Damaging Sprites"/>
  <layer id="9" name="Ammo" width="100" height="50">
   <data encoding="base64" compression="zlib">
-   eJztwzENAAAIA7A5wL9briUo4GqTJgAAAAAAAAAAAAAAAAAAAAAAANScAN8WGK8ALg==
+   eJztzjENAAAIBLF3gH+3rAhggbTJ7ZcAAAAAAAAAAAAAwL4aXXDtFwAAAAAAAACAnxqmrABb
+  </data>
+ </layer>
+ <layer id="13" name="Health" width="100" height="50">
+  <data encoding="base64" compression="zlib">
+   eJzt1aENAEAIBEF6oP9e3+IQiCdhJll/7iIAAAAAAAAAAAAAAAAAAOjk7wEAwJg/B+CqLAGw3wMLyABg
   </data>
  </layer>
  <objectgroup id="10" name="Begin">
@@ -128,12 +151,21 @@
    <property name="begin_x" type="int" value="0"/>
    <property name="begin_y" type="int" value="0"/>
   </properties>
-  <object id="16" gid="17" x="648" y="5352" width="128" height="128"/>
-  <object id="17" gid="18" x="648.121" y="5221.58" width="128" height="128"/>
+  <object id="18" gid="17" x="6579.64" y="2121.21" width="128" height="128"/>
+  <object id="19" gid="18" x="9264" y="6128" width="128" height="128"/>
+ </objectgroup>
+ <objectgroup id="14" name="Damaging Sprites">
+  <object id="28" gid="20" x="5760" y="2024" width="128" height="128">
+   <properties>
+    <property name="boundary_left" type="int" value="2400"/>
+    <property name="boundary_right" type="int" value="3000"/>
+    <property name="change_x" type="int" value="3"/>
+   </properties>
+  </object>
  </objectgroup>
  <layer id="12" name="Exit" width="100" height="50">
   <data encoding="base64" compression="zlib">
-   eJzt10EJAAAMA7FKmH+1MzEYlETBfS8BAAAAAAAAAAAAAACAXvMdAAAAAMe8LgAAdFu7fgAh
+   eJztzgEJAAAIA7BHsH9aUxwRtgRLAAAAAAAA+GKuAwAAAAAAAAAAAAAAAEDVApKNABE=
   </data>
  </layer>
 </map>
