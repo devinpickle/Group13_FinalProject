@@ -226,10 +226,12 @@ class Director(arcade.Window):
             if self.physics_engine.is_on_ground(self.player_sprite):
                 impulse = (0, constants.PLAYER_JUMP_IMPULSE)
                 self.physics_engine.apply_impulse(self.player_sprite, impulse)
+                arcade.play_sound(constants.JUMP_SOUND)
         elif key == arcade.key.J:
             if self.player_sprite.ammo > 0:
                 bullet = Bullet(20, 5, arcade.color.BLACK)
                 self.bullet_list.append(bullet)
+                arcade.play_sound(constants.SHOOT_SOUND)
 
 
                 # Set bullet position based on which way the player is facing
