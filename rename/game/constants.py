@@ -62,6 +62,10 @@ BULLET_GRAVITY = 30
 PATH = os.path.dirname(os.path.abspath(__file__))
 PLAYER_IMAGE = os.path.join(PATH, '..', 'assets', 'images', 'player_stand.png')
 GROUND_IMAGE = os.path.join(PATH, '..', 'assets', 'images', 'stoneMid.png')
+SHOOT_SOUND = arcade.load_sound(os.path.join(PATH, '..', 'assets', 'sounds', 'fall3.wav'))
+JUMP_SOUND = arcade.load_sound(os.path.join(PATH, '..', 'assets', 'sounds', 'jump4.wav'))
+
+
 
 # Maps
 #MAP_NAME = os.path.join(PATH, '..', f'map{level}.tmx')
