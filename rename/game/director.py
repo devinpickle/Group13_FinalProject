@@ -1,6 +1,6 @@
 from typing import Optional
 from game import constants
-from game.hero import Player
+from game.player import Player
 from game.arcade_output_service import ArcadeOutputService
 from game.bullet import Bullet
 import os, arcade, math
@@ -59,6 +59,10 @@ class Director(arcade.Window):
         # Used to keep track of our scrolling
         self.view_bottom = 0
         self.view_left = 0
+
+        # Read the map
+        map_name = self.map_name
+        my_map = arcade.tilemap.read_tmx(map_name)
       
         # Create the Sprite lists
         self.player_list = arcade.SpriteList()
@@ -77,10 +81,6 @@ class Director(arcade.Window):
             pass
         # self.wall_list = arcade.SpriteList(use_spatial_hash=True)
         # self.coin_list = arcade.SpriteList(use_spatial_hash=True)
-
-        # Read the map
-        map_name = self.map_name
-        my_map = arcade.tilemap.read_tmx(map_name)
 
         # Set up the player
         self.player_sprite = Player(self.spawn_point_list[0].center_x, self.spawn_point_list[0].center_y)
@@ -402,7 +402,7 @@ class Director(arcade.Window):
                 moving_sprite.change_y *= -1
 
             # Figure out and set our moving sprites velocity.
-            velocity = (moving_sprite.change_x * 10, moving_sprite.change_y * 10)
+            velocity = (moving_sprite.change_x * 100, moving_sprite.change_y * 100)
             self.physics_engine.set_velocity(moving_sprite, velocity)
         
         # Check boundaries for each moving sprite and reverse
@@ -418,7 +418,7 @@ class Director(arcade.Window):
                 moving_damage_sprite.change_y *= -1
 
             # Figure out and set our moving enemies velocity.
-            velocity = (moving_damage_sprite.change_x * 10, moving_damage_sprite.change_y * 10)
+            velocity = (moving_damage_sprite.change_x * 100, moving_damage_sprite.change_y * 100)
             self.physics_engine.set_velocity(moving_damage_sprite, velocity)
         
         # Move everything with the physics engine

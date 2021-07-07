@@ -6,7 +6,7 @@ SCREEN_HEIGHT = 1080
 SCREEN_TITLE = "Jumping Bullets"
 
 # Gravity, higher is heavier
-GRAVITY = 4000
+GRAVITY = 3000
 
 # Keep player from going too fast
 PLAYER_MAX_HORIZONTAL_SPEED = 1000
