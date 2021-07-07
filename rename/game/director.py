@@ -61,7 +61,7 @@ class GameView(arcade.View):
         # Set the level
         self.level = 1
         self.PATH = os.path.dirname(os.path.abspath(__file__))
-        self.map_name = os.path.join(self.PATH, '..', f'map{self.level}.tmx')
+        self.map_name = os.path.join(self.PATH, '..', 'maps', f'map{self.level}.tmx')
 
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
@@ -234,7 +234,7 @@ class GameView(arcade.View):
 
     def go_to_next_level(self):
         self.level += 1
-        self.map_name = os.path.join(self.PATH, '..', f'map{self.level}.tmx')
+        self.map_name = os.path.join(self.PATH, '..', 'maps', f'map{self.level}.tmx')
         self.setup()
 
 
