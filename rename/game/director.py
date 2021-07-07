@@ -1,13 +1,9 @@
-import os
-import arcade
-import math
 from typing import Optional
 from game import constants
 from game.hero import Player
-#from game.ground import Ground
 from game.arcade_output_service import ArcadeOutputService
 from game.bullet import Bullet
-#from game.move_actors import MoveActors
+import os, arcade, math
 
 class Director(arcade.Window):
     """The responsibilty of Director is to create the window, set up the game, and direct the flow of the game. 
@@ -22,7 +18,7 @@ class Director(arcade.Window):
     """
 
     def __init__(self):
-        """The Class Contructor."""
+        # The Class Contructor.
 
         super().__init__(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE)
 
@@ -48,9 +44,8 @@ class Director(arcade.Window):
 
         # Set the level
         self.level = 1
-        
-        PATH = os.path.dirname(os.path.abspath(__file__))
-        self.map_name = os.path.join(PATH, '..', f'map{self.level}.tmx')
+        self.PATH = os.path.dirname(os.path.abspath(__file__))
+        self.map_name = os.path.join(self.PATH, '..', f'map{self.level}.tmx')
 
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
@@ -67,31 +62,32 @@ class Director(arcade.Window):
       
         # Create the Sprite lists
         self.player_list = arcade.SpriteList()
-        #self.wall_list = arcade.SpriteList(use_spatial_hash=True)
-        self.coin_list = arcade.SpriteList(use_spatial_hash=True)
         self.bullet_list = arcade.SpriteList()
-
-        # Read the map
-        map_name = self.map_name
-        my_map = arcade.tilemap.read_tmx(map_name)
-
-        # Read map layers
         self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', constants.TILE_SCALING)
         self.item_list = arcade.tilemap.process_layer(my_map, 'Dynamic Items', constants.TILE_SCALING)
         self.ammo_list = arcade.tilemap.process_layer(my_map, 'Ammo', constants.TILE_SCALING)
         self.breakable_wall_list = arcade.tilemap.process_layer(my_map, 'Breakable Walls', constants.TILE_SCALING)
         self.moving_sprites_list = arcade.tilemap.process_layer(my_map, 'Moving Sprites', constants.TILE_SCALING)
         self.spawn_point_list = arcade.tilemap.process_layer(my_map, 'Begin', constants.TILE_SCALING)
-        self.exit_point_list = arcade.tilemap.process_layer(my_map, 'Exit', constants.TILE_SCALING)
         self.health_list = arcade.tilemap.process_layer(my_map, 'Health', constants.TILE_SCALING)
         self.damaging_sprites_list = arcade.tilemap.process_layer(my_map, 'Damaging Sprites', constants.TILE_SCALING)
+        try:
+            self.exit_point_list = arcade.tilemap.process_layer(my_map, 'Exit', constants.TILE_SCALING)
+        except:
+            pass
+        # self.wall_list = arcade.SpriteList(use_spatial_hash=True)
+        # self.coin_list = arcade.SpriteList(use_spatial_hash=True)
+
+        # Read the map
+        map_name = self.map_name
+        my_map = arcade.tilemap.read_tmx(map_name)
 
         # Set up the player
         self.player_sprite = Player(self.spawn_point_list[0].center_x, self.spawn_point_list[0].center_y)
         self.player_list.append(self.player_sprite)
 
         
-        #----Setting up the Physics Engine------
+        # ----Setting up the Physics Engine------
         
         # Set the damping, the amount of velocity the object
         # keeps each second.
@@ -101,106 +97,128 @@ class Director(arcade.Window):
         gravity = (0, -constants.GRAVITY)
         
         # Create the physics engine
-        self.physics_engine = arcade.PymunkPhysicsEngine(damping = damping, gravity = gravity)
+        self.physics_engine = arcade.PymunkPhysicsEngine(damping=damping, gravity=gravity)
 
         # ---------- Add Collision Handlers --------
         
         # Bullet/wall collision
         def wall_hit_handler(bullet_sprite, wall_sprite, _arbiter, _space, _data):
-            """Bullet wall collision"""
+            # Bullet wall collision
             bullet_sprite.remove_from_sprite_lists()
 
-        self.physics_engine.add_collision_handler("bullet", "wall", post_handler = wall_hit_handler)
+        self.physics_engine.add_collision_handler("bullet", "wall", post_handler=wall_hit_handler)
 
         # Bullet/item collision
         def item_hit_handler(bullet_sprite, item_sprite, _arbiter, _space, _data):
-            """Bullet Item collision"""
+            # Bullet Item collision
             bullet_sprite.remove_from_sprite_lists()
-            item_sprite.remove_from_sprite_lists()
         
-        self.physics_engine.add_collision_handler("bullet", "item", post_handler = item_hit_handler)
+        self.physics_engine.add_collision_handler("bullet", "item", post_handler=item_hit_handler)
+
+        # Bullet/ammo collision
+        def ammo_hit_handler(bullet_sprite, ammo_sprite, _arbiter, _space, _data):
+            # Bullet ammo collision
+            bullet_sprite.remove_from_sprite_lists()
+        
+        self.physics_engine.add_collision_handler("bullet", "ammo", post_handler=ammo_hit_handler)
+
+        # Bullet/health collision
+        def health_hit_handler(bullet_sprite, health_sprite, _arbiter, _space, _data):
+            # Bullet health collision
+            bullet_sprite.remove_from_sprite_lists()
+        
+        self.physics_engine.add_collision_handler("bullet", "health", post_handler=health_hit_handler)
 
         # Bullet/breakable wall collision
         def breakable_wall_hit_handler(bullet_sprite, wall_sprite, _arbiter, _space, _data):
-            """Bullet on breakable wall collision"""
+            # Bullet on breakable wall collision
             bullet_sprite.remove_from_sprite_lists()
             wall_sprite.remove_from_sprite_lists()
 
-        self.physics_engine.add_collision_handler("bullet", "breakable wall", post_handler = breakable_wall_hit_handler)
+        self.physics_engine.add_collision_handler("bullet", "breakable wall", post_handler=breakable_wall_hit_handler)
+
+        # Bullet/enemy collision
+        def enemy_hit_handler(bullet_sprite, enemy_sprite, _arbiter, _space, _data):
+            # Bullet on enemy collision
+            bullet_sprite.remove_from_sprite_lists()
+            enemy_sprite.remove_from_sprite_lists()
+
+        self.physics_engine.add_collision_handler("bullet", "damage", post_handler=enemy_hit_handler)
+
+        # Bullet/exit point collisions
+        def bullet_exit_handler(bullet_sprite, exit_sprite, _arbiter, _space, _data):
+            bullet_sprite.remove_from_sprite_lists()
+
+        self.physics_engine.add_collision_handler("bullet", "exit", post_handler=bullet_exit_handler)
 
         # Add ammo pickup collisions
         def player_item_ammo_handler(player_sprite, item_sprite, _arbiter, _space, _data):
             player_sprite.ammo += 5
             item_sprite.remove_from_sprite_lists()
 
-        self.physics_engine.add_collision_handler("player", "ammo", post_handler = player_item_ammo_handler)
+        self.physics_engine.add_collision_handler("player", "ammo", post_handler=player_item_ammo_handler)
 
         # Add exit point collisions
         def player_exit_handler(player_sprite, exit_sprite, _arbiter, _space, _data):
             self.go_to_next_level()
 
-        self.physics_engine.add_collision_handler("player", "exit", post_handler = player_exit_handler)
+        self.physics_engine.add_collision_handler("player", "exit", post_handler=player_exit_handler)
 
         # Add health pickup collisions
         def player_item_health_handler(player_sprite, item_sprite, _arbiter, _space, _data):
-            player_sprite.health += 5
             item_sprite.remove_from_sprite_lists()
+            if player_sprite.health < 100:
+                player_sprite.health += 5
+                if player_sprite.health > 100:
+                    player_sprite.health = 100
 
-        self.physics_engine.add_collision_handler("player", "health", post_handler = player_item_health_handler)
+        self.physics_engine.add_collision_handler("player", "health", post_handler=player_item_health_handler)
 
         # Add damaging sprite collisions
         def player_damage_sprite_collision(player_sprite, damage_sprite, _arbiter, _space, _data):
             player_sprite.health -= 5
             
-        self.physics_engine.add_collision_handler("player", "damage", post_handler = player_damage_sprite_collision)
-
+        self.physics_engine.add_collision_handler("player", "damage", post_handler=player_damage_sprite_collision)
 
         # Add the player
-        self.physics_engine.add_sprite(self.player_sprite, friction = constants.PLAYER_FRICTION,
-                                        mass = constants.PLAYER_MASS,
-                                        moment = arcade.PymunkPhysicsEngine.MOMENT_INF,
-                                        collision_type = "player",
-                                        max_horizontal_velocity = constants.PLAYER_MAX_HORIZONTAL_SPEED,
-                                        max_vertical_velocity = constants.PLAYER_MAX_VERTICAL_SPEED)
+        self.physics_engine.add_sprite(self.player_sprite, friction=constants.PLAYER_FRICTION,
+                                       mass=constants.PLAYER_MASS,
+                                       moment=arcade.PymunkPhysicsEngine.MOMENT_INF,
+                                       collision_type="player",
+                                       max_horizontal_velocity=constants.PLAYER_MAX_HORIZONTAL_SPEED,
+                                       max_vertical_velocity=constants.PLAYER_MAX_VERTICAL_SPEED)
         
         # Add the walls
-        self.physics_engine.add_sprite_list(self.wall_list,
-                                            friction = constants.WALL_FRICTION,
-                                            collision_type = "wall",
-                                            body_type = arcade.PymunkPhysicsEngine.STATIC)
+        self.physics_engine.add_sprite_list(self.wall_list, friction=constants.WALL_FRICTION, collision_type="wall", body_type=arcade.PymunkPhysicsEngine.STATIC)
         
         # Add the items
-        self.physics_engine.add_sprite_list(self.item_list,
-                                            friction = constants.DYNAMIC_ITEM_FRICTION,
-                                            collision_type = "item")
+        self.physics_engine.add_sprite_list(self.item_list, friction=constants.DYNAMIC_ITEM_FRICTION, collision_type="item")
 
         # Add breakable walls
-        self.physics_engine.add_sprite_list(self.breakable_wall_list,
-                                            friction = constants.WALL_FRICTION,
-                                            collision_type = "breakable wall",
-                                            body_type = arcade.PymunkPhysicsEngine.STATIC)
+        self.physics_engine.add_sprite_list(self.breakable_wall_list, friction=constants.WALL_FRICTION, collision_type="breakable wall", body_type=arcade.PymunkPhysicsEngine.STATIC)
         
         # Add moving platforms
-        self.physics_engine.add_sprite_list(self.moving_sprites_list,
-                                            body_type = arcade.PymunkPhysicsEngine.KINEMATIC)
+        self.physics_engine.add_sprite_list(self.moving_sprites_list, body_type=arcade.PymunkPhysicsEngine.KINEMATIC, collision_type="wall")
 
         # Add the ammunition items
-        self.physics_engine.add_sprite_list(self.ammo_list, collision_type = "ammo", body_type = arcade.PymunkPhysicsEngine.STATIC)
+        self.physics_engine.add_sprite_list(self.ammo_list, collision_type="ammo", body_type=arcade.PymunkPhysicsEngine.STATIC)
 
         # Add health items
-        self.physics_engine.add_sprite_list(self.health_list, collision_type = "health", body_type = arcade.PymunkPhysicsEngine.STATIC)
+        self.physics_engine.add_sprite_list(self.health_list, collision_type="health", body_type=arcade.PymunkPhysicsEngine.STATIC)
 
         # Add the exit point
-        self.physics_engine.add_sprite_list(self.exit_point_list, friction = constants.WALL_FRICTION, collision_type = 'exit')
+        try:
+            self.physics_engine.add_sprite(self.exit_point_list[0], friction=constants.FLAG_FRICTION, collision_type='exit', gravity=(0, 0))
+        except:
+            pass
 
         # Add damage sprites
-        self.physics_engine.add_sprite_list(self.damaging_sprites_list, collision_type = "damage", body_type = arcade.PymunkPhysicsEngine.KINEMATIC)
+        self.physics_engine.add_sprite_list(self.damaging_sprites_list, collision_type="damage", body_type=arcade.PymunkPhysicsEngine.KINEMATIC)
 
 
     def go_to_next_level(self):
         self.level += 1
-        PATH = os.path.dirname(os.path.abspath(__file__))
-        self.map_name = os.path.join(PATH, '..', f'map{self.level}.tmx')
+        self.map_name = os.path.join(self.PATH, '..', f'map{self.level}.tmx')
         self.setup()
 
 
@@ -215,13 +233,11 @@ class Director(arcade.Window):
        
         if key == arcade.key.LEFT or key == arcade.key.A:
             self.left_pressed = True
-            self.player_sprite.face_left = True
-            self.player_sprite.face_right = False
+            self.player_sprite.look_left()
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.right_pressed = True
-            self.player_sprite.face_left = False
-            self.player_sprite.face_right = True
-        elif key == arcade.key.UP or key == arcade.key.W:
+            self.player_sprite.look_right()
+        elif key == arcade.key.UP or key == arcade.key.W or key == arcade.key.SPACE:
             # Check if player is on the ground then jump
             if self.physics_engine.is_on_ground(self.player_sprite):
                 impulse = (0, constants.PLAYER_JUMP_IMPULSE)
@@ -233,9 +249,7 @@ class Director(arcade.Window):
                 self.bullet_list.append(bullet)
                 arcade.play_sound(constants.SHOOT_SOUND)
 
-
-                # Set bullet position based on which way the player is facing
-                # Away from the player
+                # Set bullet position away from the way the player is facing
                 start_y = self.player_sprite.center_y
                 if self.player_sprite.face_left:
                     start_x = self.player_sprite.left - 20
@@ -247,7 +261,7 @@ class Director(arcade.Window):
                     angle = 0
 
 
-                #size = max(self.player_sprite.width, self.player_sprite.height) / 2
+                # size = max(self.player_sprite.width, self.player_sprite.height) / 2
 
                 bullet.center_x = start_x
                 bullet.center_y = start_y
@@ -258,11 +272,11 @@ class Director(arcade.Window):
                 bullet_gravity = (0, -constants.BULLET_GRAVITY)
 
                 # Add bullet sprite
-                self.physics_engine.add_sprite(bullet, mass = constants.BULLET_MASS,
-                                                damping = 1.0, friction = 0.6,
-                                                collision_type = "bullet",
-                                                gravity = bullet_gravity,
-                                                elasticity = 0.9)
+                self.physics_engine.add_sprite(bullet, mass=constants.BULLET_MASS,
+                                                damping=1.0, friction=0.0,
+                                                collision_type="bullet",
+                                                gravity=bullet_gravity,
+                                                elasticity=0.0)
                 
                 # Add force to bullet
                 force = (constants.BULLET_MOVE_FORCE, 0)
@@ -270,11 +284,6 @@ class Director(arcade.Window):
 
                 # Subtract a ammo from the player
                 self.player_sprite.ammo -= 1
-
-            
-
-            
-        
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. 
@@ -314,8 +323,25 @@ class Director(arcade.Window):
         ammo_display = f"Ammo: {self.player_sprite.ammo}"
         arcade.draw_text(ammo_display, ammo_position[0], ammo_position[1], arcade.color.BLACK, 10)
 
+    def apply_force(self, is_on_ground, sprite):
+        # Update forces based on input
+        force1 = constants.PLAYER_MOVE_FORCE_ON_GROUND
+        if self.left_pressed and not self.right_pressed:
+            # Create and apply force to the left
+            force1 *= -1
+            if not is_on_ground:
+                force1 /= 2
+        elif self.right_pressed and not self.left_pressed:
+            # Create and apply force to the right
+            if not is_on_ground:
+                force1 /= 2
+        else:
+            # Increase friction to stop moving
+            self.physics_engine.set_friction(sprite, 1.0)
+            return
+        self.physics_engine.set_friction(sprite, 0)
+        self.physics_engine.apply_force(sprite, (force1, 0))
 
-        
 
     def on_update(self, delta_time):
         """ Movement and game logic. Updates the screen.
@@ -324,31 +350,7 @@ class Director(arcade.Window):
             self (Director): an instance of Director
         """
 
-        is_on_ground = self.physics_engine.is_on_ground(self.player_sprite)
-        
-        # Update player forces based on input
-        if self.left_pressed and not self.right_pressed:
-            # Create left force and apply to player
-            if is_on_ground:
-                force = (-constants.PLAYER_MOVE_FORCE_ON_GROUND, 0)
-            else:
-                force = (-constants.PLAYER_MOVE_FORCE_IN_AIR, 0)
-            self.physics_engine.apply_force(self.player_sprite, force)
-            # Set player friction to 0 while moving
-            self.physics_engine.set_friction(self.player_sprite, 0)
-        elif self.right_pressed and not self.left_pressed:
-            # Create right force and apply to player
-            if is_on_ground:
-                force = (constants.PLAYER_MOVE_FORCE_ON_GROUND, 0)
-            else:
-                force = (constants.PLAYER_MOVE_FORCE_IN_AIR, 0)
-            self.physics_engine.apply_force(self.player_sprite, force)
-            # Set player friction to 0 while moving
-            self.physics_engine.set_friction(self.player_sprite, 0)
-        else:
-            # Increase player friction to stop moving
-            self.physics_engine.set_friction(self.player_sprite, 1.0)
-        
+        self.apply_force(self.physics_engine.is_on_ground(self.player_sprite), self.player_sprite)
         
         # ------ Manage Scrolling ------
 
@@ -381,67 +383,46 @@ class Director(arcade.Window):
             changed = True
 
         if changed:
-            # Only scroll to integers. Otherwise we end up with pixels that
-            # don't line up on the screen
+            # Only scroll to integers. Otherwise we end up with pixels that don't line up on the screen
             self.view_bottom = int(self.view_bottom)
             self.view_left = int(self.view_left)
 
             # Do the scrolling
-            arcade.set_viewport(self.view_left,
-                                constants.SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                constants.SCREEN_HEIGHT + self.view_bottom)
-
-        # Move the player with the physics engine
-        self.physics_engine.step()
-
+            arcade.set_viewport(self.view_left, constants.SCREEN_WIDTH + self.view_left, self.view_bottom, constants.SCREEN_HEIGHT + self.view_bottom)
 
         # Check boundaries for each moving sprite and reverse
         for moving_sprite in self.moving_sprites_list:
-            if moving_sprite.boundary_right and \
-                    moving_sprite.change_x > 0 and \
-                    moving_sprite.right > moving_sprite.boundary_right:
+            if moving_sprite.boundary_right and moving_sprite.change_x > 0 and moving_sprite.right > moving_sprite.boundary_right:
                 moving_sprite.change_x *= -1
-            elif moving_sprite.boundary_left and \
-                    moving_sprite.change_x < 0 and \
-                    moving_sprite.left < moving_sprite.boundary_left:
+            elif moving_sprite.boundary_left and moving_sprite.change_x < 0 and moving_sprite.left < moving_sprite.boundary_left:
                 moving_sprite.change_x *= -1
-            if moving_sprite.boundary_top and \
-                    moving_sprite.change_y > 0 and \
-                    moving_sprite.top > moving_sprite.boundary_top:
+            if moving_sprite.boundary_top and moving_sprite.change_y > 0 and moving_sprite.top > moving_sprite.boundary_top:
                 moving_sprite.change_y *= -1
-            elif moving_sprite.boundary_bottom and \
-                    moving_sprite.change_y < 0 and \
-                    moving_sprite.bottom < moving_sprite.boundary_bottom:
+            elif moving_sprite.boundary_bottom and moving_sprite.change_y < 0 and moving_sprite.bottom < moving_sprite.boundary_bottom:
                 moving_sprite.change_y *= -1
 
-            # Figure out and set our moving platform velocity.
-            velocity = (moving_sprite.change_x * 1 / delta_time, moving_sprite.change_y * 1 / delta_time)
+            # Figure out and set our moving sprites velocity.
+            velocity = (moving_sprite.change_x * 10, moving_sprite.change_y * 10)
             self.physics_engine.set_velocity(moving_sprite, velocity)
         
         # Check boundaries for each moving sprite and reverse
         
         for moving_damage_sprite in self.damaging_sprites_list:
-            if moving_damage_sprite.boundary_right and \
-                    moving_damage_sprite.change_x > 0 and \
-                    moving_damage_sprite.right > moving_damage_sprite.boundary_right:
+            if moving_damage_sprite.boundary_right and moving_damage_sprite.change_x > 0 and moving_damage_sprite.right > moving_damage_sprite.boundary_right:
                 moving_damage_sprite.change_x *= -1
-            elif moving_damage_sprite.boundary_left and \
-                    moving_damage_sprite.change_x < 0 and \
-                    moving_damage_sprite.left < moving_damage_sprite.boundary_left:
+            elif moving_damage_sprite.boundary_left and moving_damage_sprite.change_x < 0 and moving_damage_sprite.left < moving_damage_sprite.boundary_left:
                 moving_damage_sprite.change_x *= -1
-            if moving_damage_sprite.boundary_top and \
-                    moving_damage_sprite.change_y > 0 and \
-                    moving_damage_sprite.top > moving_damage_sprite.boundary_top:
+            if moving_damage_sprite.boundary_top and moving_damage_sprite.change_y > 0 and moving_damage_sprite.top > moving_damage_sprite.boundary_top:
                 moving_damage_sprite.change_y *= -1
-            elif moving_damage_sprite.boundary_bottom and \
-                    moving_damage_sprite.change_y < 0 and \
-                    moving_damage_sprite.bottom < moving_damage_sprite.boundary_bottom:
+            elif moving_damage_sprite.boundary_bottom and moving_damage_sprite.change_y < 0 and moving_damage_sprite.bottom < moving_damage_sprite.boundary_bottom:
                 moving_damage_sprite.change_y *= -1
 
-            # Figure out and set our moving platform velocity.
-            velocity = (moving_damage_sprite.change_x * 1 / delta_time, moving_damage_sprite.change_y * 1 / delta_time)
+            # Figure out and set our moving enemies velocity.
+            velocity = (moving_damage_sprite.change_x * 10, moving_damage_sprite.change_y * 10)
             self.physics_engine.set_velocity(moving_damage_sprite, velocity)
+        
+        # Move everything with the physics engine
+        self.physics_engine.step()
         
 
         # Reset the game if the player health reaches 0

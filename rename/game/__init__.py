@@ -1,1 +1,1 @@
-"""The Game package contains code to run the game"""
+# The Game package contains code to run the game

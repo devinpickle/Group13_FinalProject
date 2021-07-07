@@ -2,7 +2,7 @@ from game import constants
 import arcade
 
 class Bullet(arcade.SpriteSolidColor):
-    """Bullet sprite"""
+    # Bullet sprite
         
     def pymunk_moved(self, physics_engine, dx, dy, d_angle):
         
@@ -11,8 +11,8 @@ class Bullet(arcade.SpriteSolidColor):
         
 
 
-        # How far a bullet can travel before dissapearing
-        #self.start = x
-        #self.distance = 300
-        #self.bullet_travel_right = self.start + self.distance
-        #self.bullet_travel_left = self.start - self.distance
+        # How far a bullet can travel before disappearing
+        # self.start = x
+        # self.distance = 300
+        # self.bullet_travel_right = self.start + self.distance
+        # self.bullet_travel_left = self.start - self.distance

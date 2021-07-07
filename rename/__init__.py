@@ -1,3 +1,1 @@
-"""
-The root package for the program.
-"""
+# The root package for the program.

@@ -1,7 +1,5 @@
-#Define the enemy class below
-
-import arcade
 from abc import ABC, abstractmethod
+import arcade
 
 class Enemy(arcade.Sprite, ABC):
     """A code template for the basic functionality of enemies in-game. Responsible for controlling enemy health, and so on.
@@ -14,7 +12,7 @@ class Enemy(arcade.Sprite, ABC):
         _enemy_move_speed (integer): the speed of enemy movement
     """
 
-    #Init method
+    # Init method
     def __init__(self):
         """The Class Constructor.
 
@@ -22,9 +20,9 @@ class Enemy(arcade.Sprite, ABC):
             self (Enemy): an instance of an enemy
         """
         self._enemy_health = 50
-        self._enemy_move_speed = 5 #autonomous movement; speed set to 5
+        self._enemy_move_speed = 5 # autonomous movement; speed set to 5
     
-    #What causes enemy to attack
+    # What causes enemy to attack
     @abstractmethod
     def enemy_attack_triggering_event(self):
         """Controls the cause of enemy attack. All Enemy classes must have this method present. 
@@ -34,7 +32,7 @@ class Enemy(arcade.Sprite, ABC):
         """
         pass
     
-    #What an enemy does before attacking; general movement
+    # What an enemy does before attacking; general movement
     @abstractmethod
     def enemy_movement_auto(self):
         """Controls enemy movement before any attack is triggered; autonomous movement. Can be overrided to have none, and only target player the entire time.
@@ -48,85 +46,79 @@ class Enemy(arcade.Sprite, ABC):
 
 
 
-#Define enemy subclasses below
+# Define enemy subclasses below
 class FloatingEnemy(Enemy):
-    """A code template for a floating type of enemy.
-    """
-    #overriding second abstract method
+    # A code template for a floating type of enemy.
+    # Overrides second abstract method
     def enemy_movement_auto(self):
-        #print("I will usually simply move around in a mostly horizontal fashion, slightly floating up and down, levitating in the air.")
+        # print("I will usually simply move around in a mostly horizontal fashion, slightly floating up and down, levitating in the air.")
         pass
 
-    #overriding abstract method
+    # Overrides abstract method
     def enemy_attack_triggering_event(self):
-        #print("\nBut I gravitate towards players as they approach me and/or start to shoot beams their way (Vicinity-based)\n")
+        # print("\nBut I gravitate towards players as they approach me and/or start to shoot beams their way (Vicinity-based)\n")
         pass
 
     
 class DeathWorm(Enemy):
-    """A code template for a Death Worm enemy. Simply moves up and down, and does not react to player."""
+    # A code template for a Death Worm enemy. Simply moves up and down, and does not react to player.
 
     def __init__(self):
-        super().__init__() #This enemy cannot be hurt
+        super().__init__() # This enemy cannot be hurt
         self._enemy_health = -1
         if self._enemy_health == -1:
-            #print("Enemy cannot be hurt. Only an obstacle.")
+            # print("Enemy cannot be hurt. Only an obstacle.")
             pass
 
-    #overriding second abstract method
+    # Overrides second abstract method
     def enemy_movement_auto(self):
-        #print("I move up and down, simply as a sort of obstacle.")
+        # print("I move up and down, simply as a sort of obstacle.")
         pass
 
-    #overriding abstract method
+    # Overrides abstract method
     def enemy_attack_triggering_event(self):
-        #print("\nI have no triggering event.\n")
+        # print("\nI have no triggering event.\n")
         pass
     
 
 class InsectEnemy(Enemy):
-    """A code template for an insect enemy that clings to platforms. Pre-programmed to walk in a certain direction and not react to player.""" 
+    # A code template for an insect enemy that clings to platforms. Pre-programmed to walk in a certain direction and not react to player. 
 
     def __init__(self):
         super().__init__()
-        self._enemy_health = 10 #not as much health as other enemies
+        self._enemy_health = 10 # not as much health as other enemies
 
-    #overriding second abstract method
+    # Overrides second abstract method
     def enemy_movement_auto(self):
-        #print("I walk around, cling to platforms, and to edges/walls.")
+        # print("I walk around, cling to platforms, and to edges/walls.")
         pass
 
-    #overriding abstract method
+    # Overrides abstract method
     def enemy_attack_triggering_event(self):
-        #print("there is no triggering event for this enemy; they simply move in a repeatable pattern")
+        # print("there is no triggering event for this enemy; they simply move in a repeatable pattern")
         pass
 
 
 class LaserShooterEnemy(Enemy):
-    """A code template for an enemy that hangs from the bottom of a platform and shoots at the player.
-    Keeps track of player position and targets them with shots."""
+    # A code template for an enemy that hangs from the bottom of a platform and shoots at the player.
+    # Keeps track of player position and targets them with shots.
 
     def __init__(self):
         super().__init__()
-        self._enemy_move_speed = 0 #this enemy does not move anywhere
+        self._enemy_move_speed = 0 # this enemy does not move anywhere
         self._angle = 45
         
-    #overriding second abstract method
+    # Overrides second abstract method
     def enemy_movement_auto(self):
-        #print("I do not move anywhere; stays in one spot.")
+        # print("I do not move anywhere; stays in one spot.")
         pass
 
-    #overriding abstract method
+    # Overrides abstract method
     def enemy_attack_triggering_event(self):
-        #print("If the player gets close enough, which still can be a little far off, I will shoot at them.")
+        # print("If the player gets close enough, which still can be a little far off, I will shoot at them.")
         pass
-        
 
-
-
-
-
-# #code to test classes are working properly (with print statements active)
+# code to test classes are working properly (with print statements active)
 # ghastly_beam_shooter = FloatingEnemy()
 # ghastly_beam_shooter.enemy_movement_auto()
 # ghastly_beam_shooter.enemy_attack_triggering_event()

@@ -1,5 +1,4 @@
-import sys
-import arcade
+import sys, arcade
 
 class ArcadeOutputService:
     """Renders and draws screen with actors. Capable of clearing the screen, and updating it with new actor positions.
@@ -10,11 +9,8 @@ class ArcadeOutputService:
     Attributes:
         none
     """
-
-
     def __init__(self):
-        """Class constructor"""
-
+        # Class constructor
         pass
 
     def clear_screen(self):
@@ -23,7 +19,6 @@ class ArcadeOutputService:
         Args:
             self (ArcadeOutputService): an instance of ArcadeOutputService
         """
-
         arcade.start_render()
 
     def draw_actor(self, actor):

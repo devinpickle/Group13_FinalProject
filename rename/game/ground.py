@@ -12,7 +12,7 @@ class Ground(arcade.Sprite):
         center_y (integer): the y-coordinate of the center of the sprite
     """
     def __init__(self, x, y):
-        """Class Constructor."""
+        # Class Constructor.
         super().__init__(constants.GROUND_IMAGE, constants.TILE_SCALING)
 
         self.center_x = x
