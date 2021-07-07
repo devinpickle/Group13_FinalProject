@@ -9,7 +9,26 @@ from game.arcade_output_service import ArcadeOutputService
 from game.bullet import Bullet
 #from game.move_actors import MoveActors
 
-class Director(arcade.Window):
+class MenuView(arcade.View):
+    def __init__(self, window):
+        super().__init__(window=window)
+        self.window = window
+    def on_show(self):
+        arcade.set_background_color(arcade.color.WHITE)
+
+    def on_draw(self):
+        arcade.start_render()
+        arcade.draw_text("Jumping Bullets", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2,
+                         arcade.color.BLACK, font_size=50, anchor_x="center")
+        arcade.draw_text("Click to Start", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2-75,
+                         arcade.color.GRAY, font_size=20, anchor_x="center")
+
+    def on_mouse_press(self, _x, _y, _button, _modifiers):
+        main_game = GameView()
+        main_game.setup()
+        self.window.show_view(main_game)
+
+class GameView(arcade.View):
     """The responsibilty of Director is to create the window, set up the game, and direct the flow of the game. 
 
     Stereotype:
@@ -23,9 +42,8 @@ class Director(arcade.Window):
 
     def __init__(self):
         """The Class Contructor."""
-
-        super().__init__(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE)
-
+        super().__init__()
+        
         self.output_service = ArcadeOutputService()
 
         # Lists of sprites
@@ -53,6 +71,8 @@ class Director(arcade.Window):
         self.map_name = os.path.join(PATH, '..', f'map{self.level}.tmx')
 
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
+
+        arcade.play_sound(constants.MAIN_MUSIC)
 
     def setup(self):
         """Sets up the game.
@@ -150,7 +170,7 @@ class Director(arcade.Window):
 
         # Add damaging sprite collisions
         def player_damage_sprite_collision(player_sprite, damage_sprite, _arbiter, _space, _data):
-            player_sprite.health -= 5
+            player_sprite.health -= 1
             
         self.physics_engine.add_collision_handler("player", "damage", post_handler = player_damage_sprite_collision)
 
@@ -447,3 +467,10 @@ class Director(arcade.Window):
         # Reset the game if the player health reaches 0
         if self.player_sprite.health <= 0:
             self.setup()
+
+
+def run():
+    window = arcade.Window(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE)
+    start_view = MenuView(window)
+    window.show_view(start_view)
+    arcade.run()

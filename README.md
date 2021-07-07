@@ -49,3 +49,11 @@ root                    (project root folder)
 Devin Picklesimer, pic18002@byui.edu 
 Cameron Roberts, rob20026@byui.edu 
 Brayden Jones, jon20015@byui.edu
+
+## Credits
+---
+Music: "Through Space" by maxstack https://opengameart.org/content/through-space
+
+Sounds: "Laser" by Gumichan01 https://opengameart.org/content/shots
+
+
