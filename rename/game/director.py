@@ -8,6 +8,9 @@ import os, arcade, math
 class MenuView(arcade.View):
     def on_show(self):
         arcade.set_background_color(arcade.color.WHITE)
+        self.music = arcade.Sound(os.path.join(constants.PATH, '..', 'assets', 'sounds', 'Space track.mp3'), streaming=True)
+        self.music_player = self.music.play(0.5)
+        
 
     def on_draw(self):
         arcade.start_render()
@@ -19,6 +22,7 @@ class MenuView(arcade.View):
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         game_view = GameView()
         game_view.setup()
+        self.music.stop(self.music_player)
         self.window.show_view(game_view)
 
 class GameView(arcade.View):
@@ -46,6 +50,7 @@ class GameView(arcade.View):
         self.bullet_list = None
         self.item_list = None
         self.moving_sprites_list = None
+        self.music = None
         
         # Track the current state of what key is pressed
         self.left_pressed = False
@@ -64,6 +69,7 @@ class GameView(arcade.View):
         self.map_name = os.path.join(self.PATH, '..', 'maps', f'map{self.level}.tmx')
 
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
+        arcade.play_sound(constants.MAIN_MUSIC)
 
     def setup(self):
         """Sets up the game.
@@ -192,7 +198,7 @@ class GameView(arcade.View):
 
         # Add damaging sprite collisions
         def player_damage_sprite_collision(player_sprite, damage_sprite, _arbiter, _space, _data):
-            player_sprite.health -= 5
+            player_sprite.health -= 1
             
         self.physics_engine.add_collision_handler("player", "damage", post_handler=player_damage_sprite_collision)
 
@@ -237,6 +243,7 @@ class GameView(arcade.View):
         self.map_name = os.path.join(self.PATH, '..', 'maps', f'map{self.level}.tmx')
         self.setup()
 
+    
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. Controls player sprite.
@@ -444,6 +451,11 @@ class GameView(arcade.View):
         # Reset the game if the player health reaches 0
         if self.player_sprite.health <= 0:
             self.setup()
+
+        # Reset if the player is out of bounds
+        if self.player_sprite.center_y < -200:
+            self.setup()
+
 
 def run():
     window = arcade.Window(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, "Jumping Bullets")
