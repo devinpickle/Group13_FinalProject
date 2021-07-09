@@ -7,13 +7,17 @@ import os, arcade, math
 
 class MenuView(arcade.View):
     def on_show(self):
+        self.background = arcade.load_texture(constants.TITLE_BACKGROUND)
         arcade.set_background_color(arcade.color.WHITE)
-        self.music = arcade.Sound(os.path.join(constants.PATH, '..', 'assets', 'sounds', 'Space track.mp3'), streaming=True)
+        self.music = arcade.Sound(constants.TITLE_MUSIC, streaming=True)
         self.music_player = self.music.play(0.5)
         
 
     def on_draw(self):
         arcade.start_render()
+        arcade.draw_lrwh_rectangle_textured(0, 0,
+                                            constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT,
+                                            self.background)
         arcade.draw_text("Jumping Bullets", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2,
                          arcade.color.BLACK, font_size=50, anchor_x="center")
         arcade.draw_text("Click to advance", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2-75,
@@ -24,6 +28,33 @@ class MenuView(arcade.View):
         game_view.setup()
         self.music.stop(self.music_player)
         self.window.show_view(game_view)
+
+class EndView(arcade.View):
+    def on_show(self):
+        self.background = arcade.load_texture(constants.TITLE_BACKGROUND)
+        arcade.set_background_color(arcade.color.WHITE)
+        self.music = arcade.Sound(constants.END_MUSIC, streaming=True)
+        self.music_player = self.music.play(0.5)
+        
+
+    def on_draw(self):
+        arcade.start_render()
+        arcade.draw_lrwh_rectangle_textured(0, 0,
+                                            constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT,
+                                            self.background)
+        arcade.draw_text("Victory!", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2,
+                         arcade.color.BLACK, font_size=50, anchor_x="center")
+        arcade.draw_text("Click to Restart", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2-75,
+                         arcade.color.GRAY, font_size=20, anchor_x="center")
+
+    def on_mouse_press(self, _x, _y, _button, _modifiers):
+        game_view = GameView()
+        game_view.setup()
+        self.music.stop(self.music_player)
+        self.window.show_view(game_view)
+
+
+    
 
 class GameView(arcade.View):
     """The responsibilty of Director is to create the window, set up the game, and direct the flow of the game. 
@@ -69,7 +100,8 @@ class GameView(arcade.View):
         self.map_name = os.path.join(self.PATH, '..', 'maps', f'map{self.level}.tmx')
 
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
-        arcade.play_sound(constants.MAIN_MUSIC)
+        self.music = arcade.Sound(constants.MAIN_MUSIC, streaming=True)
+        self.music_player = self.music.play(0.5)
 
     def setup(self):
         """Sets up the game.
@@ -182,7 +214,12 @@ class GameView(arcade.View):
 
         # Add exit point collisions
         def player_exit_handler(player_sprite, exit_sprite, _arbiter, _space, _data):
-            self.go_to_next_level()
+            if self.level <= 2:
+                self.go_to_next_level()
+            else:
+                end_view = EndView()
+                self.music.stop(self.music_player)
+                self.window.show_view(end_view)
 
         self.physics_engine.add_collision_handler("player", "exit", post_handler=player_exit_handler)
 
@@ -455,6 +492,8 @@ class GameView(arcade.View):
         # Reset if the player is out of bounds
         if self.player_sprite.center_y < -200:
             self.setup()
+
+        
 
 
 def run():
