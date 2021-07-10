@@ -8,7 +8,6 @@ import os, arcade, math
 class MenuView(arcade.View):
     def on_show(self):
         self.background = arcade.load_texture(constants.TITLE_BACKGROUND)
-        arcade.set_background_color(arcade.color.WHITE)
         self.music = arcade.Sound(constants.TITLE_MUSIC, streaming=True)
         self.music_player = self.music.play(0.5)
         
@@ -31,8 +30,7 @@ class MenuView(arcade.View):
 
 class EndView(arcade.View):
     def on_show(self):
-        self.background = arcade.load_texture(constants.TITLE_BACKGROUND)
-        arcade.set_background_color(arcade.color.WHITE)
+        self.background = arcade.load_texture(constants.END_BACKGROUND)
         self.music = arcade.Sound(constants.END_MUSIC, streaming=True)
         self.music_player = self.music.play(0.5)
         
@@ -129,12 +127,8 @@ class GameView(arcade.View):
         self.spawn_point_list = arcade.tilemap.process_layer(my_map, 'Begin', constants.TILE_SCALING)
         self.health_list = arcade.tilemap.process_layer(my_map, 'Health', constants.TILE_SCALING)
         self.damaging_sprites_list = arcade.tilemap.process_layer(my_map, 'Damaging Sprites', constants.TILE_SCALING)
-        try:
-            self.exit_point_list = arcade.tilemap.process_layer(my_map, 'Exit', constants.TILE_SCALING)
-        except:
-            pass
-        # self.wall_list = arcade.SpriteList(use_spatial_hash=True)
-        # self.coin_list = arcade.SpriteList(use_spatial_hash=True)
+        self.exit_point_list = arcade.tilemap.process_layer(my_map, 'Exit', constants.TILE_SCALING)
+        
 
         # Set up the player
         self.player_sprite = Player(self.spawn_point_list[0].center_x, self.spawn_point_list[0].center_y)
@@ -276,6 +270,7 @@ class GameView(arcade.View):
 
 
     def go_to_next_level(self):
+        """Set up the next level"""
         self.level += 1
         self.map_name = os.path.join(self.PATH, '..', 'maps', f'map{self.level}.tmx')
         self.setup()
@@ -320,8 +315,6 @@ class GameView(arcade.View):
                     dest_x = self.player_sprite.center_x + 400
                     angle = 0
 
-
-                # size = max(self.player_sprite.width, self.player_sprite.height) / 2
 
                 bullet.center_x = start_x
                 bullet.center_y = start_y

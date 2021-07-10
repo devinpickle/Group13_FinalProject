@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.0" orientation="orthogonal" renderorder="right-down" width="100" height="50" tilewidth="128" tileheight="128" infinite="0" nextlayerid="10" nextobjectid="6">
+<map version="1.5" tiledversion="1.7.0" orientation="orthogonal" renderorder="right-down" width="100" height="50" tilewidth="128" tileheight="128" infinite="0" nextlayerid="10" nextobjectid="43">
  <tileset firstgid="1" name="Platforms/walls" tilewidth="128" tileheight="128" tilecount="145" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
@@ -470,12 +470,12 @@
  </tileset>
  <layer id="1" name="Platforms" width="100" height="50">
   <data encoding="base64" compression="zlib">
-   eJztzDENADAMBLHQSMufZwvilyi2dOtVAQAAAAAAAAAAAAAAAAAAAAAAAFv174S6wVeqaR6/jgWx
+   eJzt1bEKgCAUBdC+29Gtv25pKNGkLHrUOXCXMpUu4jQBAAAAAAAAAAAA8FXp7Q2wo49Y9BFLrY/UCc9p9cE79BFLlD7mNX/X6mPuZERtntbddMfate/z5n0uxufO86O9jebKWejd92dSzvnU2pzjv8Wij1j0AQAAAEDLAsCzOA4=
   </data>
  </layer>
  <layer id="2" name="Dynamic Items" width="100" height="50">
   <data encoding="base64" compression="zlib">
-   eJzt0bEJADAMA0Hj/YdOHUJqy3BXqRR8FQAAAAAAAAAAAAAAAAAAAMCrpw9w0SOLHln0mNefzQw9suiRRQ82OPdgABk=
+   eJzt08EJACAQA8FD++9ZfChYwUWYqSCwpAoAAAAAAAAAAAAAgHSjewCP2T2Aa7fwjxx65Dgt9AAAAAAAAPjPAroOABc=
   </data>
  </layer>
  <layer id="3" name="Breakable Walls" width="100" height="50">
@@ -485,30 +485,105 @@
  </layer>
  <layer id="4" name="Health" width="100" height="50">
   <data encoding="base64" compression="zlib">
-   eJztxqEBAAAIA6D9H73YC5YNQiIBAAAAAAAAAAAAAAAAAAAAAOCrKQcAbiz1sAEl
+   eJzt0cEJAAAIxLDb/+nEIjiEYAKdoAkAAAAAAAAAAAAAAMA9tfFDxXMAAAAAAAAYDSiIAts=
   </data>
  </layer>
  <layer id="5" name="Ammo" width="100" height="50">
   <data encoding="base64" compression="zlib">
-   eJztziEOACAMADH+L7cPEwyZmAUEbXL+xgAAAAAAAAAAAAAAAAAAAAAA4Cf5eoAtS1WUuCOblmgCOGkCI8UJvA==
+   eJztzzENAAAMw7Dyf0d4z55RqGwpAJIAAAAAAAAAAAAAAADAN1eLth8AAAAAAAB6Le1aAk0=
   </data>
  </layer>
  <layer id="6" name="Exit" width="100" height="50">
   <data encoding="base64" compression="zlib">
-   eJztzjEBAAAMAiD73wu8GHpAAhIAAAAAAAAAAAAAAAAAAAAAAADou3YABjwO3gCV
+   eJztzkEJAAAIBLDr/zawKQ4RtgRLAAAAAAAAAAAAAAAAAH6Z6wAAAAAAAEDJAseSAJU=
   </data>
  </layer>
  <objectgroup id="7" name="Moving Sprites">
-  <object id="3" gid="7" x="4772" y="5988" width="128" height="128">
+  <object id="19" gid="7" x="2180" y="4412" width="424" height="128">
    <properties>
-    <property name="boundary_bottom" type="int" value="300"/>
-    <property name="boundary_top" type="int" value="500"/>
-    <property name="change_y" type="int" value="2"/>
+    <property name="boundary_left" type="int" value="700"/>
+    <property name="boundary_right" type="int" value="2000"/>
+    <property name="change_x" type="int" value="3"/>
+   </properties>
+  </object>
+  <object id="35" gid="1073741974" x="4672" y="5664" width="128" height="1528">
+   <properties>
+    <property name="boundary_bottom" type="int" value="600"/>
+    <property name="boundary_top" type="int" value="1400"/>
+    <property name="change_y" type="int" value="3"/>
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="8" name="Damaging Sprites"/>
+ <objectgroup id="8" name="Damaging Sprites">
+  <object id="6" gid="120" x="1672" y="4484" width="128" height="128"/>
+  <object id="7" gid="120" x="1796" y="4488" width="128" height="128"/>
+  <object id="8" gid="120" x="1932" y="4480" width="128" height="128"/>
+  <object id="9" gid="120" x="2068" y="4500" width="128" height="128"/>
+  <object id="10" gid="120" x="2212" y="4496" width="128" height="128"/>
+  <object id="11" gid="120" x="2356" y="4484" width="128" height="128"/>
+  <object id="12" gid="120" x="2492" y="4480" width="128" height="128"/>
+  <object id="13" gid="120" x="2632" y="4484" width="128" height="128"/>
+  <object id="14" gid="120" x="2776" y="4484" width="128" height="128"/>
+  <object id="15" gid="120" x="2912" y="4484" width="128" height="128"/>
+  <object id="16" gid="120" x="3056" y="4488" width="128" height="128"/>
+  <object id="17" gid="120" x="3204" y="4484" width="128" height="128"/>
+  <object id="18" gid="120" x="3348" y="4480" width="128" height="128"/>
+  <object id="20" gid="120" x="5632" y="4480" width="128" height="128"/>
+  <object id="21" gid="120" x="5768" y="4484" width="128" height="128"/>
+  <object id="22" gid="120" x="5908" y="4480" width="128" height="128"/>
+  <object id="23" gid="120" x="6048" y="4484" width="128" height="128"/>
+  <object id="24" gid="120" x="6188" y="4488" width="128" height="128"/>
+  <object id="25" gid="120" x="6324" y="4484" width="128" height="128"/>
+  <object id="26" gid="120" x="6460" y="4484" width="128" height="128"/>
+  <object id="27" gid="120" x="6596" y="4484" width="128" height="128"/>
+  <object id="28" gid="120" x="6736" y="4488" width="128" height="128"/>
+  <object id="29" gid="120" x="6880" y="4492" width="128" height="128"/>
+  <object id="30" gid="120" x="7040" y="4480" width="128" height="128"/>
+  <object id="31" gid="1073741974" x="11384" y="4576" width="948" height="820"/>
+  <object id="37" gid="1073741974" x="1972" y="4168" width="128" height="128">
+   <properties>
+    <property name="boundary_bottom" type="int" value="1100"/>
+    <property name="boundary_top" type="int" value="2000"/>
+    <property name="change_y" type="int" value="6"/>
+   </properties>
+  </object>
+  <object id="38" gid="1073741974" x="2280" y="3920" width="128" height="128">
+   <properties>
+    <property name="boundary_bottom" type="int" value="1100"/>
+    <property name="boundary_top" type="int" value="2000"/>
+    <property name="change_y" type="int" value="6"/>
+   </properties>
+  </object>
+  <object id="39" gid="1073741974" x="2580" y="3920" width="128" height="128">
+   <properties>
+    <property name="boundary_bottom" type="int" value="1100"/>
+    <property name="boundary_top" type="int" value="2000"/>
+    <property name="change_y" type="int" value="6"/>
+   </properties>
+  </object>
+  <object id="40" gid="1073741974" x="3480" y="3916" width="128" height="128">
+   <properties>
+    <property name="boundary_bottom" type="int" value="1100"/>
+    <property name="boundary_top" type="int" value="2000"/>
+    <property name="change_y" type="int" value="6"/>
+   </properties>
+  </object>
+  <object id="41" gid="1073741974" x="3156" y="4072" width="128" height="128">
+   <properties>
+    <property name="boundary_bottom" type="int" value="1100"/>
+    <property name="boundary_top" type="int" value="2000"/>
+    <property name="change_y" type="int" value="6"/>
+   </properties>
+  </object>
+  <object id="42" gid="1073741974" x="2820" y="3448" width="128" height="128">
+   <properties>
+    <property name="boundary_bottom" type="int" value="1100"/>
+    <property name="boundary_top" type="int" value="2000"/>
+    <property name="change_y" type="int" value="6"/>
+   </properties>
+  </object>
+ </objectgroup>
  <objectgroup id="9" name="Begin">
-  <object id="1" gid="151" x="188" y="6123" width="80" height="110"/>
+  <object id="1" gid="151" x="788" y="4283" width="80" height="110"/>
  </objectgroup>
 </map>
