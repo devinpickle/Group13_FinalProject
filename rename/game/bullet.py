@@ -1,4 +1,3 @@
-from game import constants
 import arcade
 
 class Bullet(arcade.SpriteSolidColor):
