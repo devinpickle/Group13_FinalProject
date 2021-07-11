@@ -14,13 +14,9 @@ class MenuView(arcade.View):
 
     def on_draw(self):
         arcade.start_render()
-        arcade.draw_lrwh_rectangle_textured(0, 0,
-                                            constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT,
-                                            self.background)
-        arcade.draw_text("Jumping Bullets", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2,
-                         arcade.color.BLACK, font_size=50, anchor_x="center")
-        arcade.draw_text("Click to advance", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2-75,
-                         arcade.color.GRAY, font_size=20, anchor_x="center")
+        arcade.draw_lrwh_rectangle_textured(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, self.background)
+        arcade.draw_text("Jumping Bullets", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2+35, arcade.color.WHITE_SMOKE, font_size=50, anchor_x="center")
+        arcade.draw_text("Click to advance", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2-35, arcade.color.GRAY, font_size=20, anchor_x="center")
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         game_view = GameView()
@@ -37,13 +33,10 @@ class EndView(arcade.View):
 
     def on_draw(self):
         arcade.start_render()
-        arcade.draw_lrwh_rectangle_textured(0, 0,
-                                            constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT,
-                                            self.background)
-        arcade.draw_text("Victory!", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2,
-                         arcade.color.BLACK, font_size=50, anchor_x="center")
-        arcade.draw_text("Click to Restart", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2-75,
-                         arcade.color.GRAY, font_size=20, anchor_x="center")
+        arcade.set_viewport(0, constants.SCREEN_WIDTH, 0, constants.SCREEN_HEIGHT)
+        arcade.draw_lrwh_rectangle_textured(0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, self.background)
+        arcade.draw_text("Victory!", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2, arcade.color.WHITE_SMOKE, font_size=50, anchor_x="center")
+        arcade.draw_text("Click to Restart", constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2-75, arcade.color.GRAY, font_size=20, anchor_x="center")
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         game_view = GameView()
@@ -68,7 +61,6 @@ class GameView(arcade.View):
 
     def __init__(self):
         # The Class Contructor.
-
         super().__init__()
 
         self.output_service = ArcadeOutputService()
@@ -80,6 +72,10 @@ class GameView(arcade.View):
         self.item_list = None
         self.moving_sprites_list = None
         self.music = None
+
+        # Used to keep track of our scrolling
+        view_bottom = 0
+        view_left = 0
         
         # Track the current state of what key is pressed
         self.left_pressed = False
@@ -87,10 +83,6 @@ class GameView(arcade.View):
 
         # Set the physics engine
         self.physics_engine = Optional[arcade.PymunkPhysicsEngine]
-
-        # Used to keep track of our scrolling
-        self.view_bottom = 0
-        self.view_left = 0
 
         # Set the level
         self.level = 1
@@ -298,45 +290,40 @@ class GameView(arcade.View):
                 impulse = (0, constants.PLAYER_JUMP_IMPULSE)
                 self.physics_engine.apply_impulse(self.player_sprite, impulse)
                 arcade.play_sound(constants.JUMP_SOUND)
-        elif key == arcade.key.J:
-            if self.player_sprite.ammo > 0:
-                bullet = Bullet(20, 5, arcade.color.BLACK)
-                self.bullet_list.append(bullet)
-                arcade.play_sound(constants.SHOOT_SOUND)
 
-                # Set bullet position away from the way the player is facing
-                start_y = self.player_sprite.center_y
-                if self.player_sprite.face_left:
-                    start_x = self.player_sprite.left - 20
-                    dest_x = self.player_sprite.center_x - 400
-                    angle = 180
-                else:
-                    start_x = self.player_sprite.right + 20
-                    dest_x = self.player_sprite.center_x + 400
-                    angle = 0
+    def on_mouse_press(self, x, y, button, modifiers):
+        """ Called whenever the mouse button is clicked. """
 
+        # Create a bullet
+        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png")
 
-                bullet.center_x = start_x
-                bullet.center_y = start_y
+        # Position the bullet at the player's current location
+        start_x = self.player_sprite.center_x
+        start_y = self.player_sprite.center_y
+        bullet.center_x = start_x
+        bullet.center_y = start_y
 
-                bullet.angle = angle
+        # Get from the mouse the destination location for the bullet
+        dest_x = x + self.view_left
+        dest_y = y + self.view_bottom
 
-                # Set bullet gravity
-                bullet_gravity = (0, -constants.BULLET_GRAVITY)
+        # Do math to calculate how to get the bullet to the destination.
+        x_diff = dest_x - start_x
+        y_diff = dest_y - start_y
+        angle = math.atan2(y_diff, x_diff)
 
-                # Add bullet sprite
-                self.physics_engine.add_sprite(bullet, mass=constants.BULLET_MASS,
-                                                damping=1.0, friction=0.0,
-                                                collision_type="bullet",
-                                                gravity=bullet_gravity,
-                                                elasticity=0.0)
-                
-                # Add force to bullet
-                force = (constants.BULLET_MOVE_FORCE, 0)
-                self.physics_engine.apply_force(bullet, force)
+        # Angle the bullet sprite so it doesn't look like it is flying sideways.
+        bullet.angle = math.degrees(angle)
 
-                # Subtract a ammo from the player
-                self.player_sprite.ammo -= 1
+        # Taking into account the angle, calculate our change_x and change_y.
+        bullet.change_x = math.cos(angle) * 5
+        bullet.change_y = math.sin(angle) * 5
+
+        # Add the bullet to the appropriate lists
+        self.bullet_list.append(bullet)
+        self.physics_engine.add_sprite(bullet, mass=constants.BULLET_MASS, damping=1.0, friction=0.0, collision_type="bullet", gravity=(0, 0), elasticity=0.0)
+        self.physics_engine.apply_force(bullet, (constants.BULLET_MOVE_FORCE, 0))
+        self.player_sprite.ammo -= 1
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. 
@@ -439,6 +426,8 @@ class GameView(arcade.View):
             # Only scroll to integers. Otherwise we end up with pixels that don't line up on the screen
             self.view_bottom = int(self.view_bottom)
             self.view_left = int(self.view_left)
+            view_bottom = self.view_bottom
+            view_left = self.view_left
 
             # Do the scrolling
             arcade.set_viewport(self.view_left, constants.SCREEN_WIDTH + self.view_left, self.view_bottom, constants.SCREEN_HEIGHT + self.view_bottom)
