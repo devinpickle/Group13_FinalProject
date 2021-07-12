@@ -13,11 +13,11 @@ python3 -m pip install arcade
 After you've installed the required libraries, open a terminal and browse to the 
 project's root folder. Start the program by running the following command.
 ```
-python3 .\rename\__main__.py
+python3 .\JumpingBullets\__main__.py
 ```
 OR
 ```
-py .\rename\__main__.py
+py .\JumpingBullets\__main__.py
 ```
 You can also run the program from an IDE like Visual Studio Code. Start your IDE 
 and open the project folder. Select the main module inside the batter folder and 
