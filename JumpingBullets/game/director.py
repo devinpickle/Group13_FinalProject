@@ -156,18 +156,18 @@ class GameView(arcade.View):
         self.physics_engine.add_collision_handler("bullet", "item", post_handler=item_hit_handler)
 
         # Bullet/ammo collision
-        def ammo_hit_handler(bullet_sprite, ammo_sprite, _arbiter, _space, _data):
-            # Bullet ammo collision
-            bullet_sprite.remove_from_sprite_lists()
+        # def ammo_hit_handler(bullet_sprite, ammo_sprite, _arbiter, _space, _data):
+        #     # Bullet ammo collision
+        #     bullet_sprite.remove_from_sprite_lists()
         
-        self.physics_engine.add_collision_handler("bullet", "ammo", post_handler=ammo_hit_handler)
+        # self.physics_engine.add_collision_handler("bullet", "ammo", post_handler=ammo_hit_handler)
 
         # Bullet/health collision
-        def health_hit_handler(bullet_sprite, health_sprite, _arbiter, _space, _data):
-            # Bullet health collision
-            bullet_sprite.remove_from_sprite_lists()
+        # def health_hit_handler(bullet_sprite, health_sprite, _arbiter, _space, _data):
+        #     # Bullet health collision
+        #     bullet_sprite.remove_from_sprite_lists()
         
-        self.physics_engine.add_collision_handler("bullet", "health", post_handler=health_hit_handler)
+        # self.physics_engine.add_collision_handler("bullet", "health", post_handler=health_hit_handler)
 
         # Bullet/breakable wall collision
         def breakable_wall_hit_handler(bullet_sprite, wall_sprite, _arbiter, _space, _data):
@@ -182,6 +182,7 @@ class GameView(arcade.View):
             # Bullet on enemy collision
             bullet_sprite.remove_from_sprite_lists()
             enemy_sprite.remove_from_sprite_lists()
+            arcade.play_sound(constants.SLIME_SOUND)
 
         self.physics_engine.add_collision_handler("bullet", "damage", post_handler=enemy_hit_handler)
 
@@ -192,11 +193,11 @@ class GameView(arcade.View):
         self.physics_engine.add_collision_handler("bullet", "exit", post_handler=bullet_exit_handler)
 
         # Add ammo pickup collisions
-        def player_item_ammo_handler(player_sprite, item_sprite, _arbiter, _space, _data):
-            player_sprite.ammo += 5
-            item_sprite.remove_from_sprite_lists()
+        # def player_item_ammo_handler(player_sprite, item_sprite, _arbiter, _space, _data):
+        #     player_sprite.ammo += 5
+        #     item_sprite.remove_from_sprite_lists()
 
-        self.physics_engine.add_collision_handler("player", "ammo", post_handler=player_item_ammo_handler)
+        # self.physics_engine.add_collision_handler("player", "ammo", post_handler=player_item_ammo_handler)
 
         # Add exit point collisions
         def player_exit_handler(player_sprite, exit_sprite, _arbiter, _space, _data):
@@ -210,14 +211,14 @@ class GameView(arcade.View):
         self.physics_engine.add_collision_handler("player", "exit", post_handler=player_exit_handler)
 
         # Add health pickup collisions
-        def player_item_health_handler(player_sprite, item_sprite, _arbiter, _space, _data):
-            item_sprite.remove_from_sprite_lists()
-            if player_sprite.health < 100:
-                player_sprite.health += 5
-                if player_sprite.health > 100:
-                    player_sprite.health = 100
+        # def player_item_health_handler(player_sprite, item_sprite, _arbiter, _space, _data):
+        #     item_sprite.remove_from_sprite_lists()
+        #     if player_sprite.health < 100:
+        #         player_sprite.health += 5
+        #         if player_sprite.health > 100:
+        #             player_sprite.health = 100
 
-        self.physics_engine.add_collision_handler("player", "health", post_handler=player_item_health_handler)
+        #self.physics_engine.add_collision_handler("player", "health", post_handler=player_item_health_handler)
 
         # Add damaging sprite collisions
         def player_damage_sprite_collision(player_sprite, damage_sprite, _arbiter, _space, _data):
@@ -246,10 +247,10 @@ class GameView(arcade.View):
         self.physics_engine.add_sprite_list(self.moving_sprites_list, body_type=arcade.PymunkPhysicsEngine.KINEMATIC, collision_type="wall")
 
         # Add the ammunition items
-        self.physics_engine.add_sprite_list(self.ammo_list, collision_type="ammo", body_type=arcade.PymunkPhysicsEngine.STATIC)
+        #self.physics_engine.add_sprite_list(self.ammo_list, collision_type="ammo", body_type=arcade.PymunkPhysicsEngine.STATIC)
 
         # Add health items
-        self.physics_engine.add_sprite_list(self.health_list, collision_type="health", body_type=arcade.PymunkPhysicsEngine.STATIC)
+        #self.physics_engine.add_sprite_list(self.health_list, collision_type="health", body_type=arcade.PymunkPhysicsEngine.STATIC)
 
         # Add the exit point
         try:
@@ -324,6 +325,8 @@ class GameView(arcade.View):
         self.physics_engine.add_sprite(bullet, mass=constants.BULLET_MASS, damping=1.0, friction=0.0, collision_type="bullet", gravity=(0, 0), elasticity=0.0)
         self.physics_engine.apply_force(bullet, (constants.BULLET_MOVE_FORCE, 0))
         self.player_sprite.ammo -= 1
+        arcade.play_sound(constants.SHOOT_SOUND)
+
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. 
@@ -474,6 +477,23 @@ class GameView(arcade.View):
         # Reset if the player is out of bounds
         if self.player_sprite.center_y < -200:
             self.setup()
+
+        # Ammo collisions
+        ammo_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.ammo_list)
+        for ammo in ammo_hit_list:
+            ammo.remove_from_sprite_lists()
+            arcade.play_sound(constants.AMMO_SOUND)
+            self.player_sprite.ammo += 5
+
+        # Health collisions
+        health_item_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.health_list)
+        for health in health_item_hit_list:
+            health.remove_from_sprite_lists()
+            arcade.play_sound(constants.HEALTH_SOUND)
+            if self.player_sprite.health < 100:
+                self.player_sprite.health += 5
+                if self.player_sprite.health > 100:
+                    self.player_sprite.health = 100
 
         
 

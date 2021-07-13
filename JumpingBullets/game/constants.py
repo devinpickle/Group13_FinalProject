@@ -38,8 +38,8 @@ CHARACTER_SCALING = 1
 TILE_SCALING = 0.5
 
 # How many pixels to keep as a minimum margin between the character and the edge of the screen.
-LEFT_VIEWPORT_MARGIN = 600
-RIGHT_VIEWPORT_MARGIN = 600
+LEFT_VIEWPORT_MARGIN = 800
+RIGHT_VIEWPORT_MARGIN = 800
 BOTTOM_VIEWPORT_MARGIN = 400
 TOP_VIEWPORT_MARGIN = 400
 
@@ -54,9 +54,13 @@ PLAYER_IMAGE = os.path.join(PATH, '..', 'assets', 'images', 'player_stand.png')
 PLAYER_IMAGE_LEFT = os.path.join(PATH, '..', 'assets', 'images', 'player_stand_left.png')
 GROUND_IMAGE = os.path.join(PATH, '..', 'assets', 'images', 'stoneMid.png')
 SHOOT_SOUND = arcade.load_sound(os.path.join(PATH, '..', 'assets', 'sounds', 'laser.wav'))
-JUMP_SOUND = arcade.load_sound(os.path.join(PATH, '..', 'assets', 'sounds', 'jump4.wav'))
+JUMP_SOUND = arcade.load_sound(os.path.join(PATH, '..', 'assets', 'sounds', 'Digital_SFX', 'phaseJump3.mp3'))
 MAIN_MUSIC = os.path.join(PATH, '..', 'assets', 'sounds', 'through space.ogg')
 TITLE_MUSIC = os.path.join(PATH, '..', 'assets', 'sounds', 'Space track.mp3')
 TITLE_BACKGROUND = os.path.join(PATH, '..', 'assets', 'images', 'scifi_main_menu.jpg')
 END_MUSIC = os.path.join(PATH, '..', 'assets', 'sounds', 'snd_music2.ogg')
 END_BACKGROUND = os.path.join(PATH, '..', 'assets', 'images', 'rock wall tileset.png')
+SLIME_SOUND = arcade.load_sound(os.path.join(PATH, '..', 'assets', 'sounds', 'impactsplat01.mp3.flac'))
+HEALTH_SOUND = arcade.load_sound(os.path.join(PATH, '..', 'assets', 'sounds', 'life_pickup.flac'))
+AMMO_SOUND = arcade.load_sound(os.path.join(PATH, '..', 'assets', 'sounds', 'Digital_SFX', 'phaserDown1.mp3'))
+
