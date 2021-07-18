@@ -413,7 +413,7 @@ class GameView(arcade.View):
         if self.level == 1:
             self.enemy = BlueAlien(self.enemy_spawn_list[0].center_x, self.enemy_spawn_list[0].center_y, 1)
             self.enemies_list.append(self.enemy)
-            self.enemy.enemy_movement_auto() #Look at this too
+            #self.enemy.enemy_movement_auto() #Look at this too!!
 
             self.enemy = PurpleSlime(self.enemy_spawn_list[1].center_x, self.enemy_spawn_list[1].center_y, 2)
             self.enemies_list.append(self.enemy)

@@ -140,7 +140,7 @@ class BlueAlien(Enemy):
     # Overrides second abstract method
     def enemy_attack_triggering_event(self):
         #Vicinity-based
-        # if get_distance_between_sprites(self, director.GameView.player_sprite) < 10.0: #this doesn't work yet
+        # if get_distance_between_sprites(self, director.GameView.player_sprite) < 10.0: #this doesn't work yet!!!
         #     return False
         # else:
         #     return True
