@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.0" orientation="orthogonal" renderorder="right-down" width="100" height="50" tilewidth="128" tileheight="128" infinite="0" nextlayerid="10" nextobjectid="11">
+<map version="1.5" tiledversion="1.7.0" orientation="orthogonal" renderorder="right-down" width="100" height="50" tilewidth="128" tileheight="128" infinite="0" nextlayerid="11" nextobjectid="20">
  <tileset firstgid="1" name="Platforms/walls" tilewidth="128" tileheight="128" tilecount="145" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
@@ -468,6 +468,9 @@
    <image width="80" height="110" source="../assets/images/player_2/player_back.png"/>
   </tile>
  </tileset>
+ <tileset firstgid="152" name="Enemy Spawn" tilewidth="128" tileheight="128" tilecount="4" columns="2">
+  <image source="../assets/images/items/spawn_img.jpg" width="307" height="311"/>
+ </tileset>
  <layer id="1" name="Platforms" width="100" height="50">
   <data encoding="base64" compression="zlib">
    eJzt2LEOgyAQBmD3jt3a93/PpnGhBEQQGy75vuQWCXrcHwfdNgAAAAAAAAAAAAAAADjnkVTtemm9tZ9+6Rxb8y+tH+2n311zk8cYeaxFHmuRx1pKc3tVKvVs7JHHmNLcRmZp/nPIYy3yWIs8frW+ef/x/DPXRu4TSc8/oTvPKo9dT/9H79CMutLblT0rid5/Lvp5ovefi36e6P3nop/n23/tv0RvvSfea7Si5/EBsw8K1Q==
@@ -506,6 +509,10 @@
     <property name="change_y" type="int" value="2"/>
    </properties>
   </object>
+ </objectgroup>
+ <objectgroup id="10" name="Enemy Spawn">
+  <object id="16" gid="155" x="1024" y="6256" width="128" height="128"/>
+  <object id="19" gid="154" x="2940" y="6268" width="128" height="128"/>
  </objectgroup>
  <objectgroup id="8" name="Damaging Sprites">
   <object id="6" gid="150" x="2300" y="6248" width="128" height="128">

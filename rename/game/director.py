@@ -3,6 +3,7 @@ from game import constants
 from game.player import Player
 from game.arcade_output_service import ArcadeOutputService
 from game.bullet import Bullet
+from game.enemy import Enemy, BlueAlien, PurpleSlime
 import os, arcade, math
 
 class MenuView(arcade.View):
@@ -48,15 +49,30 @@ class EndView(arcade.View):
     
 
 class GameView(arcade.View):
-    """The responsibilty of Director is to create the window, set up the game, and direct the flow of the game. 
+    """The responsibilty of GameView is to create the game window, set up the game, and direct the flow of the game. 
 
     Stereotype:
         Controller, Interfacer
 
     Attributes:
         output_service: instance of ArcadeOutputService
-        player_list (list): Begins with an empty list for player sprites
-        wall_list (list): Begins with an empty list for wall sprites 
+
+        player_list (None): Begins with None Type variable for set up of player sprites list
+        enemies_list (None): Begins with None Type variable for set up of enemy sprites list
+        wall_list (None): Begins with None Type variable for set up of wall sprites list
+        bullet_list (None): Begins with None Type variable for set up of bullet sprites list
+        item_list (None): Begins with None Type variable for set up of item sprites list
+        moving_sprites_list (None): Begins with None Type variable for set up of moving sprites list
+
+        left_pressed (bool): Set to false; indicator of key press
+        right_pressed (bool): Set to false; indicator of key press
+
+        music (sound file): set up of background game music
+        music_player: plays the background game music
+
+
+
+
     """
 
     def __init__(self):
@@ -67,6 +83,7 @@ class GameView(arcade.View):
 
         # Lists of sprites
         self.player_list = None
+        self.enemies_list = None 
         self.wall_list = None
         self.bullet_list = None
         self.item_list = None
@@ -111,6 +128,7 @@ class GameView(arcade.View):
         # Create the Sprite lists
         self.player_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
+        self.enemies_list = arcade.SpriteList()
         self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', constants.TILE_SCALING)
         self.item_list = arcade.tilemap.process_layer(my_map, 'Dynamic Items', constants.TILE_SCALING)
         self.ammo_list = arcade.tilemap.process_layer(my_map, 'Ammo', constants.TILE_SCALING)
@@ -118,6 +136,7 @@ class GameView(arcade.View):
         self.moving_sprites_list = arcade.tilemap.process_layer(my_map, 'Moving Sprites', constants.TILE_SCALING)
         self.spawn_point_list = arcade.tilemap.process_layer(my_map, 'Begin', constants.TILE_SCALING)
         self.health_list = arcade.tilemap.process_layer(my_map, 'Health', constants.TILE_SCALING)
+        self.enemy_spawn_list = arcade.tilemap.process_layer(my_map, 'Enemy Spawn', constants.TILE_SCALING)
         self.damaging_sprites_list = arcade.tilemap.process_layer(my_map, 'Damaging Sprites', constants.TILE_SCALING)
         self.exit_point_list = arcade.tilemap.process_layer(my_map, 'Exit', constants.TILE_SCALING)
         
@@ -177,13 +196,13 @@ class GameView(arcade.View):
 
         self.physics_engine.add_collision_handler("bullet", "breakable wall", post_handler=breakable_wall_hit_handler)
 
-        # Bullet/enemy collision
-        def enemy_hit_handler(bullet_sprite, enemy_sprite, _arbiter, _space, _data):
-            # Bullet on enemy collision
+        # Bullet/damaging sprite collision
+        def damaging_sprite_hit_handler(bullet_sprite, damaging_sprite, _arbiter, _space, _data):
+            # Bullet on damaging sprite collision
             bullet_sprite.remove_from_sprite_lists()
-            enemy_sprite.remove_from_sprite_lists()
+            damaging_sprite.remove_from_sprite_lists()
 
-        self.physics_engine.add_collision_handler("bullet", "damage", post_handler=enemy_hit_handler)
+        self.physics_engine.add_collision_handler("bullet", "damage", post_handler=damaging_sprite_hit_handler)
 
         # Bullet/exit point collisions
         def bullet_exit_handler(bullet_sprite, exit_sprite, _arbiter, _space, _data):
@@ -223,7 +242,7 @@ class GameView(arcade.View):
         def player_damage_sprite_collision(player_sprite, damage_sprite, _arbiter, _space, _data):
             player_sprite.health -= 1
             
-        self.physics_engine.add_collision_handler("player", "damage", post_handler=player_damage_sprite_collision)
+        self.physics_engine.add_collision_handler("player", "damage", post_handler=player_damage_sprite_collision) #obstacles; sprites that do damage in general
 
         # Add the player
         self.physics_engine.add_sprite(self.player_sprite, friction=constants.PLAYER_FRICTION,
@@ -232,6 +251,9 @@ class GameView(arcade.View):
                                        collision_type="player",
                                        max_horizontal_velocity=constants.PLAYER_MAX_HORIZONTAL_SPEED,
                                        max_vertical_velocity=constants.PLAYER_MAX_VERTICAL_SPEED)
+
+        #Add some some enemies to start the game with 
+        self.add_enemy()
         
         # Add the walls
         self.physics_engine.add_sprite_list(self.wall_list, friction=constants.WALL_FRICTION, collision_type="wall", body_type=arcade.PymunkPhysicsEngine.STATIC)
@@ -257,8 +279,9 @@ class GameView(arcade.View):
         except:
             pass
 
-        # Add damage sprites
+        # Add damage sprites (any obstacles that do damage to player)
         self.physics_engine.add_sprite_list(self.damaging_sprites_list, collision_type="damage", body_type=arcade.PymunkPhysicsEngine.KINEMATIC)
+        
 
 
     def go_to_next_level(self):
@@ -268,7 +291,6 @@ class GameView(arcade.View):
         self.setup()
 
     
-
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. Controls player sprite.
         
@@ -338,6 +360,7 @@ class GameView(arcade.View):
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.right_pressed = False
 
+
     def on_draw(self):
         """Handles drawing of actors in game.
 
@@ -356,6 +379,7 @@ class GameView(arcade.View):
         self.output_service.draw_actors(self.exit_point_list)
         self.output_service.draw_actors(self.health_list)
         self.output_service.draw_actors(self.damaging_sprites_list)
+        self.output_service.draw_actors(self.enemies_list)   
         health_position = self.player_sprite.get_health_coordinates()
         health_display = f"Health: {self.player_sprite.health}"
         arcade.draw_text(health_display, health_position[0], health_position[1], arcade.color.BLACK, 10)
@@ -383,6 +407,46 @@ class GameView(arcade.View):
         self.physics_engine.apply_force(sprite, (force1, 0))
 
 
+    def add_enemy(self):
+        """Adds enemies to the screen"""
+        
+        if self.level == 1:
+            self.enemy = BlueAlien(self.enemy_spawn_list[0].center_x, self.enemy_spawn_list[0].center_y, 1)
+            self.enemies_list.append(self.enemy)
+            self.enemy.enemy_movement_auto() #Look at this too
+
+            self.enemy = PurpleSlime(self.enemy_spawn_list[1].center_x, self.enemy_spawn_list[1].center_y, 2)
+            self.enemies_list.append(self.enemy)
+        
+        elif self.level == 2:
+            for i in range(0,2): #spawn 2 blue aliens
+                self.enemy = BlueAlien(self.enemy_spawn_list[i].center_x, self.enemy_spawn_list[i].center_y, 1) 
+                self.enemies_list.append(self.enemy)
+            
+            self.enemy = PurpleSlime(self.enemy_spawn_list[2].center_x, self.enemy_spawn_list[2].center_y, 2) #spawn 1 purple slime
+            self.enemies_list.append(self.enemy)
+
+
+        # Bullet/enemy collision
+        def enemy_hit_handler(bullet_sprite, enemy_sprite, _arbiter, _space, _data):
+            # Bullet on enemy collision
+            bullet_sprite.remove_from_sprite_lists()
+            enemy_sprite.enemy_health -= 6  #subtract enemy health (bullets do 6 damage)
+            if enemy_sprite.enemy_health == 0:
+                enemy_sprite.remove_from_sprite_lists()
+            
+        self.physics_engine.add_collision_handler("bullet", "enemy_damage", post_handler=enemy_hit_handler)
+
+        # Add player/enemy sprite collisions
+        def player_enemy_sprite_collision(player_sprite, enemy_sprite, _arbiter, _space, _data):
+            player_sprite.health -= 1
+        
+        self.physics_engine.add_collision_handler("player", "enemy_damage", post_handler=player_enemy_sprite_collision) #enemies (enemy health is subtracted differently, and thus has a different damage label, so we have to keep this separate)
+
+        # Add enemy sprites
+        self.physics_engine.add_sprite_list(self.enemies_list, collision_type="enemy_damage", body_type=arcade.PymunkPhysicsEngine.KINEMATIC)
+
+
     def on_update(self, delta_time):
         """ Movement and game logic. Updates the screen.
         
@@ -391,6 +455,12 @@ class GameView(arcade.View):
         """
 
         self.apply_force(self.physics_engine.is_on_ground(self.player_sprite), self.player_sprite)
+
+        # ------ Add Enemies (from spawning locations) ------
+
+        #only add new enemies if the current ones have been destroyed
+        if len(self.enemies_list) == 0:
+            self.add_enemy()
         
         # ------ Manage Scrolling ------
 

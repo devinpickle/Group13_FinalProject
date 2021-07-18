@@ -60,3 +60,7 @@ TITLE_MUSIC = os.path.join(PATH, '..', 'assets', 'sounds', 'Space track.mp3')
 TITLE_BACKGROUND = os.path.join(PATH, '..', 'assets', 'images', 'scifi_main_menu.jpg')
 END_MUSIC = os.path.join(PATH, '..', 'assets', 'sounds', 'snd_music2.ogg')
 END_BACKGROUND = os.path.join(PATH, '..', 'assets', 'images', 'rock wall tileset.png')
+
+#Enemy Images
+BLUE_ALIEN = os.path.join(PATH, '..', 'assets', 'images', 'alien', 'alienBlue_front.png')
+PURPLE_SLIME = os.path.join(PATH, '..', 'assets', 'images', 'enemies', 'slimePurple.png')
